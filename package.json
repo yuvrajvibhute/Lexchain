@@ -1,0 +1,14 @@
+{
+  "name": "lexchain",
+  "version": "1.0.0",
+  "description": "LexChain - Blockchain Court Evidence Ledger",
+  "main": "index.js",
+  "scripts": {
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && node server.js",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
