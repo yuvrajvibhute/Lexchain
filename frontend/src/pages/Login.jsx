@@ -66,10 +66,10 @@ function roleRedirect(role) {
 }
 
 const LOGIN_FIELDS = {
-    user: [{ key: "name", label: "FULL NAME", ph: "e.g. Priya Sharma", req: true }, { key: "email", label: "GMAIL / EMAIL", ph: "name@gmail.com", req: true, type: "email" }, { key: "city", label: "CITY", ph: "e.g. Bangalore", req: true }],
-    lawyer: [{ key: "name", label: "FULL NAME", ph: "Adv. Your Name", req: true }, { key: "email", label: "EMAIL", ph: "lawyer@email.com", req: true, type: "email" }, { key: "barCouncilId", label: "BAR COUNCIL ID", ph: "KAR/2015/XXXX", req: true }],
-    judge: [{ key: "name", label: "FULL NAME", ph: "Hon. Justice Name", req: true }, { key: "email", label: "OFFICIAL EMAIL", ph: "judge@court.gov.in", req: true, type: "email" }, { key: "passcode", label: "JUDGE PASSCODE", ph: "Official passcode", req: true, type: "password", special: "passcode" }],
-    admin: [{ key: "name", label: "NAME", ph: "Admin Name", req: true }, { key: "email", label: "EMAIL", ph: "admin@lexchain.in", req: true, type: "email" }, { key: "passcode", label: "ADMIN PASSCODE", ph: "Admin passcode", req: true, type: "password", special: "passcode" }],
+    user: [{ key: "name", label: "FULL NAME", ph: "e.g. Priya Sharma", req: true }, { key: "city", label: "CITY", ph: "e.g. Bangalore", req: true }],
+    lawyer: [{ key: "name", label: "FULL NAME", ph: "Adv. Your Name", req: true }, { key: "barCouncilId", label: "BAR COUNCIL ID", ph: "KAR/2015/XXXX", req: true }],
+    judge: [{ key: "name", label: "FULL NAME", ph: "Hon. Justice Name", req: true }, { key: "passcode", label: "JUDGE PASSCODE", ph: "Official passcode", req: true, type: "password", special: "passcode" }],
+    admin: [{ key: "name", label: "NAME", ph: "Admin Name", req: true }, { key: "passcode", label: "ADMIN PASSCODE", ph: "Admin passcode", req: true, type: "password", special: "passcode" }],
 };
 
 export default function Login() {

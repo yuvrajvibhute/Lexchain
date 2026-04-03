@@ -276,7 +276,6 @@ export default function LawyerDashboard() {
                             <div style={{ textAlign: "center", marginBottom: 22 }}>
                                 <div style={{ width: 72, height: 72, borderRadius: "50%", background: "linear-gradient(135deg,#d4a017,#b8860b)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, margin: "0 auto 12px" }}>⚖️</div>
                                 <div style={{ fontSize: 18, fontWeight: 800, color: "#e2e8f0" }}>{user?.name}</div>
-                                <div style={{ fontSize: 12, color: "#475569", marginTop: 4 }}>{user?.email}</div>
                                 <div style={{ marginTop: 10 }}>{user?.verified ? <span style={{ color: "#22c55e", fontSize: 12, fontWeight: 700 }}>✅ Verified Lawyer</span> : <span style={{ color: "#f59e0b", fontSize: 12 }}>⏳ Awaiting Admin Verification</span>}</div>
                             </div>
                             {[["Bar Council ID", user?.barCouncilId], ["License No.", user?.licenseNo], ["Specialization", user?.specialization], ["Experience", user?.experience ? `${user.experience} years` : "—"], ["Consultation Fee", user?.fee ? `₹${user.fee}` : "—"], ["City", user?.city], ["Phone", user?.phone]].map(([k, v]) => (

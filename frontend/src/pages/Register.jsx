@@ -59,7 +59,6 @@ html,body{min-height:100%;overflow-x:hidden;}
 const ROLE_FIELDS = {
     user: [
         { key: "name", label: "FULL NAME", ph: "e.g. Priya Sharma", req: true },
-        { key: "email", label: "GMAIL / EMAIL", ph: "name@gmail.com", req: true, type: "email" },
         { key: "phone", label: "MOBILE NUMBER", ph: "9876543210", req: true },
         { key: "aadhaar", label: "AADHAAR / NATIONAL ID", ph: "XXXX-XXXX-XXXX", req: true },
         { key: "city", label: "CITY", ph: "e.g. Bangalore, Mumbai", req: true },
@@ -67,7 +66,6 @@ const ROLE_FIELDS = {
     ],
     lawyer: [
         { key: "name", label: "FULL NAME", ph: "Adv. Priya Krishnamurthy", req: true },
-        { key: "email", label: "EMAIL ADDRESS", ph: "lawyer@email.com", req: true, type: "email" },
         { key: "barCouncilId", label: "BAR COUNCIL ID", ph: "KAR/2015/3421", req: true },
         { key: "licenseNo", label: "LICENSE NUMBER", ph: "LIC-KA-3421", req: true },
         { key: "specialization", label: "SPECIALIZATION", ph: "", req: true, select: ["Criminal Law", "Civil Law", "Family Law", "Constitutional Law", "Cyber Law", "Corporate Law", "Property Law", "Human Rights", "Tax Law", "Labor Law"] },
@@ -79,7 +77,6 @@ const ROLE_FIELDS = {
     ],
     judge: [
         { key: "name", label: "FULL NAME / TITLE", ph: "Hon. Justice Meena Iyer", req: true },
-        { key: "email", label: "OFFICIAL EMAIL", ph: "judge@court.gov.in", req: true, type: "email" },
         { key: "courtName", label: "COURT NAME", ph: "Karnataka High Court", req: true },
         { key: "post", label: "DESIGNATION", ph: "e.g. Additional Sessions Judge", req: true },
         { key: "city", label: "CITY", ph: "e.g. Bangalore", req: true },
@@ -87,7 +84,6 @@ const ROLE_FIELDS = {
     ],
     admin: [
         { key: "name", label: "FULL NAME", ph: "Admin Name", req: true },
-        { key: "email", label: "EMAIL ADDRESS", ph: "admin@lexchain.in", req: true, type: "email" },
         { key: "post", label: "POST / DESIGNATION", ph: "e.g. System Administrator", req: true },
         { key: "passcode", label: "ADMIN PASSCODE", ph: "Enter admin passcode", req: true, type: "password", special: "passcode" },
     ],

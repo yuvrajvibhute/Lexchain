@@ -1,27 +1,24 @@
 /**
- * Wallet context — uses RainbowKit + wagmi for wallet connection.
- * Provides the same interface surface as Privy so Login/Register
- * components work unchanged.
+ * Wallet context — uses Privy for wallet connection and authentication.
  */
-import { useAccount, useDisconnect } from "wagmi";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { usePrivy } from "@privy-io/react-auth";
 
-export const isPrivyEnabled = false; // Using RainbowKit instead
+export const isPrivyEnabled = true;
 
 /**
- * Drop-in replacement for usePrivy() — powered by RainbowKit + wagmi.
- * Returns: { login, logout, authenticated, user }
+ * Drop-in replacement for usePrivy() — powered by Privy.
+ * Returns: { login, logout, authenticated, user, ready }
  */
 export function usePrivySafe() {
-  const { address, isConnected } = useAccount();
-  const { disconnect } = useDisconnect();
-  const { openConnectModal } = useConnectModal();
+  const { login, logout, authenticated, user, ready, connectWallet } = usePrivy();
 
   return {
-    login: openConnectModal ?? (() => {}),
-    logout: disconnect,
-    authenticated: isConnected,
-    user: isConnected ? { wallet: { address } } : null,
-    ready: true,
+    login,
+    logout,
+    authenticated,
+    user,
+    ready,
+    connectWallet,
   };
 }
+

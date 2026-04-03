@@ -620,7 +620,7 @@ export default function AdminDashboard() {
                                         <div style={{ fontWeight: 700, fontSize: 14, color: "#e2e8f0", marginBottom: 4 }}>⚖️ {l.name}</div>
                                         <div style={{ fontSize: 12, color: "#d4a017", marginBottom: 4 }}>{l.specialization} · {l.experience} yrs exp · ₹{l.fee?.toLocaleString()}/consultation</div>
                                         <div style={{ fontSize: 12, color: "#475569" }}>Bar Council: <span style={{ color: "#94a3b8", fontFamily: "monospace" }}>{l.barCouncilId}</span> · {l.courtName} · {l.city}</div>
-                                        <div style={{ fontSize: 12, color: "#475569", marginTop: 2 }}>{l.email} · {l.phone}</div>
+                                        <div style={{ fontSize: 12, color: "#475569", marginTop: 2 }}>{l.email ? `${l.email} · ` : ""}{l.phone}</div>
                                     </div>
                                     <div style={{ display: "flex", flexDirection: "column", gap: 8, alignItems: "flex-end" }}>
                                         <span style={{ padding: "3px 12px", borderRadius: 20, fontSize: 12, fontWeight: 700, background: l.verified ? "rgba(34,197,94,.15)" : "rgba(245,158,11,.1)", color: l.verified ? "#22c55e" : "#f59e0b" }}>

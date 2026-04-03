@@ -2,41 +2,21 @@ import { StrictMode, Component } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { WagmiProvider, createConfig, http } from "wagmi";
+import { WagmiProvider, createConfig } from "@privy-io/wagmi";
 import { mainnet, polygon, optimism } from "wagmi/chains";
-import { connectorsForWallets, RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
-import {
-  metaMaskWallet,
-  walletConnectWallet,
-  coinbaseWallet,
-  rainbowWallet,
-  trustWallet,
-  injectedWallet,
-} from "@rainbow-me/rainbowkit/wallets";
+import { http } from "wagmi";
+import { PrivyProvider } from "@privy-io/react-auth";
+import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { AuthProvider } from "./context/AuthContext";
 import App from "./App";
 
-// ─── RainbowKit + Wagmi setup ─────────────────────────────────────────────────
-const projectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID || "b56e18d47c72ab683b10814fe9495694";
 
-const connectors = connectorsForWallets(
-  [
-    {
-      groupName: "Popular",
-      wallets: [metaMaskWallet, coinbaseWallet, rainbowWallet, trustWallet],
-    },
-    {
-      groupName: "More",
-      wallets: [walletConnectWallet, injectedWallet],
-    },
-  ],
-  { appName: "LexChain", projectId }
-);
+// ─── Privy config ─────────────────────────────────────────────────────────────
+const PRIVY_APP_ID = "cmnif2ahs01am0clcp3zs15df";
 
 const wagmiConfig = createConfig({
   chains: [mainnet, polygon, optimism],
-  connectors,
   transports: {
     [mainnet.id]: http(),
     [polygon.id]: http(),
@@ -45,6 +25,7 @@ const wagmiConfig = createConfig({
 });
 
 const queryClient = new QueryClient();
+
 
 // ─── Error Boundary ───────────────────────────────────────────────────────────
 class ErrorBoundary extends Component {
@@ -87,26 +68,44 @@ class ErrorBoundary extends Component {
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <ErrorBoundary>
-      <WagmiProvider config={wagmiConfig}>
+      <PrivyProvider
+        appId={PRIVY_APP_ID}
+        config={{
+          appearance: {
+            theme: "dark",
+            accentColor: "#d4a017",
+            logo: "/logo.jpg",
+          },
+          embeddedWallets: {
+            createOnLogin: "users-without-wallets",
+          },
+          externalWallets: {
+            coinbaseWallet: { connectionOptions: "all" },
+          },
+          loginMethods: ["wallet"],
+        }}
+      >
         <QueryClientProvider client={queryClient}>
-          <RainbowKitProvider
-            theme={darkTheme({
-              accentColor: "#d4a017",
-              accentColorForeground: "#020818",
-              borderRadius: "medium",
-              fontStack: "system",
-              overlayBlur: "small",
-            })}
-            appInfo={{ appName: "LexChain — Blockchain Evidence Platform" }}
-          >
-            <BrowserRouter>
-              <AuthProvider>
-                <App />
-              </AuthProvider>
-            </BrowserRouter>
-          </RainbowKitProvider>
+          <WagmiProvider config={wagmiConfig} reconnectOnMount={true}>
+            <RainbowKitProvider
+              theme={darkTheme({
+                accentColor: "#d4a017",
+                accentColorForeground: "#020818",
+                borderRadius: "medium",
+                fontStack: "system",
+                overlayBlur: "small",
+              })}
+              appInfo={{ appName: "LexChain — Blockchain Evidence Platform" }}
+            >
+              <BrowserRouter>
+                <AuthProvider>
+                  <App />
+                </AuthProvider>
+              </BrowserRouter>
+            </RainbowKitProvider>
+          </WagmiProvider>
         </QueryClientProvider>
-      </WagmiProvider>
+      </PrivyProvider>
     </ErrorBoundary>
   </StrictMode>
 );
