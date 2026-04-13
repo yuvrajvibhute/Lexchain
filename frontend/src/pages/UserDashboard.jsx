@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:3001";
 const STATUS_COLOR = { filed: "#3b82f6", lawyer_assigned: "#d4a017", under_review: "#7c3aed", hearing_scheduled: "#06b6d4", judgement_issued: "#f59e0b", closed: "#22c55e" };
@@ -37,6 +38,8 @@ const STYLES = `
 .spinner{width:22px;height:22px;border:2px solid #1e3a6e;border-top-color:#3b82f6;border-radius:50%;animation:spin 1s linear infinite;}
 @media(max-width:640px){.pad{padding:14px!important;}.nav-row{flex-wrap:wrap;gap:8px!important;}.stat-grid{grid-template-columns:1fr 1fr!important;}}
 @media(max-width:400px){.stat-grid{grid-template-columns:1fr!important;}}
+.dash-theme-btn{position:fixed;bottom:20px;right:20px;z-index:999;width:42px;height:42px;border-radius:50%;border:1px solid rgba(212,160,23,.35);background:rgba(15,23,42,.95);color:#d4a017;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:all .25s;}
+.dash-theme-btn:hover{transform:scale(1.15) rotate(15deg);border-color:#d4a017;}
 `;
 
 function StatusBadge({ status }) {
@@ -54,6 +57,7 @@ const EV_TYPES = ["FIR", "CCTV", "Forensic", "Document"];
 export default function UserDashboard() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const { isDark, toggleTheme } = useTheme();
     const [tab, setTab] = useState("track");
 
     // Case filing
@@ -216,8 +220,9 @@ export default function UserDashboard() {
     const displayName = user?.name || user?.email?.split("@")[0] || "User";
 
     return (
-        <div style={{ minHeight: "100vh", background: "#05070d", fontFamily: "'Inter',sans-serif", color: "#e2e8f0" }}>
+        <div style={{ minHeight: "100vh", background: isDark ? "#05070d" : "#f0ede6", fontFamily: "'Inter',sans-serif", color: isDark ? "#e2e8f0" : "#1a1a2e" }}>
             <style>{STYLES}</style>
+            <button className="dash-theme-btn" onClick={toggleTheme} title={isDark ? "Light Mode" : "Dark Mode"}>{isDark ? "☀️" : "🌙"}</button>
 
             {/* Navbar */}
             <div style={{ background: "rgba(15,23,42,.95)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(59,130,246,.1)", padding: "0 24px", position: "sticky", top: 0, zIndex: 50 }}>

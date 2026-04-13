@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
+import { ThemeProvider } from "./context/ThemeContext";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -8,6 +9,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import LawyerDashboard from "./pages/LawyerDashboard";
 import CourtDashboard from "./pages/CourtDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import "./App.css";
 
 function roleHome(role) {
   if (role === "admin") return "/admin";
@@ -16,9 +18,8 @@ function roleHome(role) {
   return "/dashboard";
 }
 
-export default function App() {
+function AppRoutes() {
   const { user } = useAuth();
-
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -48,5 +49,13 @@ export default function App() {
 
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+  );
+}
+
+export default function App() {
+  return (
+    <ThemeProvider>
+      <AppRoutes />
+    </ThemeProvider>
   );
 }

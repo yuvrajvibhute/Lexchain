@@ -10,6 +10,8 @@ import { RainbowKitProvider, darkTheme } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
 import { AuthProvider } from "./context/AuthContext";
 import App from "./App";
+import "./App.css";
+import "./index.css";
 
 
 // ─── Privy config ─────────────────────────────────────────────────────────────

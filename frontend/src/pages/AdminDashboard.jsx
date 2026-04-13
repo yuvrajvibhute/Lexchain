@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 const API = import.meta.env.VITE_API_URL || "http://localhost:3001";
 const typeColors = { FIR: "#ef4444", CCTV: "#3b82f6", Forensic: "#22c55e", Document: "#f59e0b" };
@@ -61,11 +62,14 @@ select.inp{appearance:none;}
 @media(max-width:480px){
   .stat-grid{grid-template-columns:1fr!important;}
 }
+.dash-theme-btn{position:fixed;bottom:20px;right:20px;z-index:999;width:42px;height:42px;border-radius:50%;border:1px solid rgba(212,160,23,.35);background:rgba(15,23,42,.95);color:#d4a017;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:all .25s;}
+.dash-theme-btn:hover{transform:scale(1.15) rotate(15deg);border-color:#d4a017;}
 `;
 
 export default function AdminDashboard() {
     const { user, logout } = useAuth();
     const navigate = useNavigate();
+    const { isDark, toggleTheme } = useTheme();
     const [tab, setTab] = useState("dashboard");
     const [evidence, setEvidence] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -209,8 +213,9 @@ export default function AdminDashboard() {
     const Spinner = () => <div className="spinner" style={{ margin: "0 auto 10px" }} />;
 
     return (
-        <div style={{ minHeight: "100vh", background: "#05070d", fontFamily: "'Inter', sans-serif", color: "#e2e8f0" }}>
+        <div style={{ minHeight: "100vh", background: isDark ? "#05070d" : "#f0ede6", fontFamily: "'Inter', sans-serif", color: isDark ? "#e2e8f0" : "#1a1a2e" }}>
             <style>{ADMIN_STYLES}</style>
+            <button className="dash-theme-btn" onClick={toggleTheme} title={isDark ? "Light Mode" : "Dark Mode"}>{isDark ? "☀️" : "🌙"}</button>
 
             {/* Header */}
             <div style={{ background: "rgba(15,23,42,.95)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(59,130,246,.12)", padding: "0 24px", position: "sticky", top: 0, zIndex: 50 }}>
