@@ -17,53 +17,58 @@ const ADMIN_STYLES = `
 *{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#1e3a6e;border-radius:2px}
-.glass{background:rgba(15,23,42,.7);backdrop-filter:blur(20px);border:1px solid rgba(59,130,246,.12);border-radius:16px;}
-.card{background:rgba(15,23,42,.7);border:1px solid rgba(59,130,246,.12);border-radius:12px;padding:22px;}
-.btn-blue{cursor:pointer;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border:none;border-radius:8px;padding:10px 22px;color:#fff;font-family:inherit;font-size:13px;font-weight:700;transition:opacity .2s;white-space:nowrap;}
+.glass{background:rgba(15,23,42,.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(59,130,246,.12);border-radius:16px;}
+.card{background:rgba(15,23,42,.7);border:1px solid rgba(59,130,246,.12);border-radius:12px;padding:18px;}
+.btn-blue{cursor:pointer;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border:none;border-radius:8px;padding:10px 22px;color:#fff;font-family:inherit;font-size:13px;font-weight:700;transition:opacity .2s;white-space:nowrap;min-height:40px;touch-action:manipulation;}
 .btn-blue:hover{opacity:.85;}
 .btn-blue:disabled{opacity:.4;cursor:not-allowed;}
-.btn-ghost{cursor:pointer;background:transparent;border:1px solid #1e3a6e;border-radius:8px;padding:8px 18px;color:#94a3b8;font-family:inherit;font-size:13px;transition:all .2s;white-space:nowrap;}
+.btn-ghost{cursor:pointer;background:transparent;border:1px solid #1e3a6e;border-radius:8px;padding:8px 16px;color:#94a3b8;font-family:inherit;font-size:13px;transition:all .2s;white-space:nowrap;min-height:36px;touch-action:manipulation;}
 .btn-ghost:hover{border-color:#3b82f6;color:#e2e8f0;}
-.btn-gold{cursor:pointer;background:linear-gradient(135deg,#d4a017,#b8860b);border:none;border-radius:8px;padding:8px 18px;color:#020818;font-family:inherit;font-size:13px;font-weight:700;transition:all .2s;}
+.btn-gold{cursor:pointer;background:linear-gradient(135deg,#d4a017,#b8860b);border:none;border-radius:8px;padding:8px 16px;color:#020818;font-family:inherit;font-size:13px;font-weight:700;transition:all .2s;min-height:36px;touch-action:manipulation;}
 .btn-gold:hover{opacity:.85;transform:translateY(-1px);}
-.btn-green{cursor:pointer;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);border-radius:8px;padding:8px 18px;color:#22c55e;font-family:inherit;font-size:13px;font-weight:700;transition:all .2s;}
+.btn-green{cursor:pointer;background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);border-radius:8px;padding:8px 16px;color:#22c55e;font-family:inherit;font-size:13px;font-weight:700;transition:all .2s;min-height:36px;touch-action:manipulation;}
 .btn-green:hover{background:rgba(34,197,94,.25);}
-.inp{width:100%;padding:10px 14px;background:rgba(5,7,13,.8);border:1px solid #1e3a6e;border-radius:8px;color:#e2e8f0;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s;}
+.inp{width:100%;padding:11px 14px;background:rgba(5,7,13,.8);border:1px solid #1e3a6e;border-radius:8px;color:#e2e8f0;font-size:16px;font-family:inherit;outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none;}
 .inp:focus{border-color:#3b82f6;}
 .inp::placeholder{color:#475569;}
 .inp option{background:#0a1628;}
-.tab-btn{cursor:pointer;padding:8px 16px;border-bottom:2px solid transparent;color:#64748b;font-size:13px;font-weight:600;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;white-space:nowrap;}
+.tab-btn{cursor:pointer;padding:10px 14px;border-bottom:2px solid transparent;color:#64748b;font-size:13px;font-weight:600;transition:all .15s;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;white-space:nowrap;min-height:40px;touch-action:manipulation;}
 .tab-btn.active{border-bottom-color:#3b82f6;color:#e2e8f0;}
 .tab-btn:hover:not(.active){color:#94a3b8;}
 @keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .fadein{animation:fadein .3s ease;}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
-select.inp{appearance:none;}
-.user-result-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-radius:8px;background:rgba(5,7,13,.5);border:1px solid rgba(59,130,246,.1);margin-bottom:8px;font-size:13px;}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+.user-result-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 14px;border-radius:8px;background:rgba(5,7,13,.5);border:1px solid rgba(59,130,246,.1);margin-bottom:8px;font-size:13px;flex-wrap:wrap;}
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
 .ev-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-.ev-header{display:grid;grid-template-columns:100px 1fr 130px 80px 100px 110px;gap:10px;padding:10px 16px;background:rgba(5,7,13,.5);font-size:10px;color:#334155;letter-spacing:.1em;min-width:640px;}
-.ev-row{display:grid;grid-template-columns:100px 1fr 130px 80px 100px 110px;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(59,130,246,.06);cursor:pointer;transition:background .12s;font-size:13px;min-width:640px;}
+.ev-header{display:grid;grid-template-columns:90px 1fr 120px 70px 90px 100px;gap:8px;padding:10px 14px;background:rgba(5,7,13,.5);font-size:10px;color:#334155;letter-spacing:.1em;min-width:560px;}
+.ev-row{display:grid;grid-template-columns:90px 1fr 120px 70px 90px 100px;gap:8px;align-items:center;padding:11px 14px;border-bottom:1px solid rgba(59,130,246,.06);cursor:pointer;transition:background .12s;font-size:13px;min-width:560px;}
 .ev-row:hover{background:rgba(29,78,216,.06);}
-.req-row{display:grid;grid-template-columns:1fr 120px 70px 100px;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(59,130,246,.06);font-size:13px;}
+.req-row{display:grid;grid-template-columns:1fr 110px 65px 90px;gap:10px;align-items:center;padding:11px 14px;border-bottom:1px solid rgba(59,130,246,.06);font-size:13px;}
 .form-grid{display:flex;flex-direction:column;gap:16px;}
-.lbl{font-size:11px;color:#64748b;margin-bottom:6px;letter-spacing:.08em;font-weight:600;}
+.lbl{font-size:11px;color:#64748b;margin-bottom:6px;letter-spacing:.08em;font-weight:600;text-transform:uppercase;}
 .spinner{width:20px;height:20px;border:2px solid #1e3a6e;border-top-color:#3b82f6;border-radius:50%;animation:spin 1s linear infinite;}
+.tab-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tab-scroll::-webkit-scrollbar{display:none;}
+.dash-theme-btn{position:fixed;bottom:20px;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:999;width:44px;height:44px;border-radius:50%;border:1px solid rgba(212,160,23,.35);background:rgba(15,23,42,.95);color:#d4a017;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:all .25s;touch-action:manipulation;}
+.dash-theme-btn:hover{transform:scale(1.15) rotate(15deg);border-color:#d4a017;}
 
 /* Responsive */
 @media(max-width:1024px){.stat-grid{grid-template-columns:repeat(2,1fr)!important;}}
-@media(max-width:640px){
-  .stat-grid{grid-template-columns:1fr 1fr!important;}
-  .admin-header-actions{flex-wrap:wrap;gap:8px!important;}
-  .admin-pad{padding:16px!important;}
-  .tab-scroll{overflow-x:auto;white-space:nowrap;}
+@media(max-width:768px){
+  .stat-grid{grid-template-columns:repeat(2,1fr)!important;gap:10px!important;}
+  .admin-header-actions{flex-wrap:wrap;gap:8px!important;min-height:auto!important;padding:8px 0!important;}
+  .admin-pad{padding:14px!important;}
+  .blockchain-info{display:none!important;}
+  .card{padding:14px!important;}
+  .detail-grid{grid-template-columns:1fr!important;}
+  .lawyer-meta{flex-direction:column;gap:4px!important;}
 }
 @media(max-width:480px){
-  .stat-grid{grid-template-columns:1fr!important;}
+  .stat-grid{grid-template-columns:1fr 1fr!important;}
+  .admin-pad{padding:12px!important;}
 }
-.dash-theme-btn{position:fixed;bottom:20px;right:20px;z-index:999;width:42px;height:42px;border-radius:50%;border:1px solid rgba(212,160,23,.35);background:rgba(15,23,42,.95);color:#d4a017;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:all .25s;}
-.dash-theme-btn:hover{transform:scale(1.15) rotate(15deg);border-color:#d4a017;}
 `;
 
 export default function AdminDashboard() {
@@ -218,29 +223,29 @@ export default function AdminDashboard() {
             <button className="dash-theme-btn" onClick={toggleTheme} title={isDark ? "Light Mode" : "Dark Mode"}>{isDark ? "☀️" : "🌙"}</button>
 
             {/* Header */}
-            <div style={{ background: "rgba(15,23,42,.95)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(59,130,246,.12)", padding: "0 24px", position: "sticky", top: 0, zIndex: 50 }}>
-                <div className="admin-header-actions" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 60, gap: 12 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", flexShrink: 0 }} onClick={() => navigate("/")}>
-                        <img src="/logo.jpg" alt="LexChain" style={{ height: 36, borderRadius: 8, objectFit: "contain" }} />
+            <div style={{ background: isDark ? "rgba(15,23,42,.95)" : "rgba(244,241,234,.97)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(59,130,246,.12)", padding: "0 16px", position: "sticky", top: 0, zIndex: 50 }}>
+                <div className="admin-header-actions" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", minHeight: 60, gap: 10, padding: "8px 0" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }} onClick={() => navigate("/")}>
+                        <img src="/logo.jpg" alt="LexChain" style={{ height: 32, borderRadius: 7, objectFit: "contain" }} />
                         <div>
-                            <div style={{ fontSize: 13, fontWeight: 800, color: "#e2e8f0", letterSpacing: ".05em" }}>LEXCHAIN</div>
+                            <div style={{ fontSize: 13, fontWeight: 800, letterSpacing: ".05em" }}>LEXCHAIN</div>
                             <div style={{ fontSize: 9, color: "#475569", letterSpacing: ".12em" }}>ADMIN CONSOLE</div>
                         </div>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 11, color: "#64748b", fontFamily: "'IBM Plex Mono', monospace", flexWrap: "wrap" }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11, color: "#64748b", fontFamily: "'IBM Plex Mono', monospace", flexWrap: "wrap" }}>
+                        <div className="blockchain-info" style={{ display: "flex", alignItems: "center", gap: 6 }}>
                             <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", animation: "pulse 2s infinite" }} />
                             <span>#{blockchainNow.toLocaleString()}</span>
                         </div>
-                        <div style={{ background: "rgba(124,58,237,.15)", border: "1px solid rgba(124,58,237,.3)", borderRadius: 8, padding: "4px 10px", color: "#c4b5fd", fontSize: 11 }}>
+                        <div style={{ background: "rgba(124,58,237,.15)", border: "1px solid rgba(124,58,237,.3)", borderRadius: 8, padding: "4px 10px", color: "#c4b5fd", fontSize: 11, maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             🛡 {displayName}
                         </div>
-                        <button className="btn-ghost" style={{ padding: "5px 12px", fontSize: 11 }} onClick={() => { logout(); navigate("/"); }}>Sign Out</button>
+                        <button className="btn-ghost" style={{ padding: "5px 10px", fontSize: 11 }} onClick={() => { logout(); navigate("/"); }}>Sign Out</button>
                     </div>
                 </div>
-                <div className="tab-scroll" style={{ display: "flex", gap: 2, borderTop: "1px solid rgba(59,130,246,.06)", justifyContent: "center" }}>
+                <div className="tab-scroll" style={{ display: "flex", gap: 0, borderTop: "1px solid rgba(59,130,246,.06)" }}>
                     {[
-                        ["dashboard", "📊 Dashboard"],
+                        ["dashboard", "📊 Overview"],
                         ["evidence", "🗂 Evidence"],
                         ["upload", "⬆ Upload"],
                         ["verify", "🔍 Verify"],
@@ -257,7 +262,7 @@ export default function AdminDashboard() {
                 </div>
             </div>
 
-            <div className="admin-pad" style={{ padding: "28px 24px", maxWidth: 1100, margin: "0 auto" }}>
+            <div className="admin-pad" style={{ padding: "20px 16px", maxWidth: 1100, margin: "0 auto" }}>
 
                 {/* ── DASHBOARD ── */}
                 {tab === "dashboard" && (

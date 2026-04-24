@@ -2,9 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/jpeg" href="/logo.jpg" />
+    <!-- Mobile-first viewport, no scaling to fix zoom issues -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5" />
+    <meta name="theme-color" content="#020818" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)" />
+    <!-- iOS PWA -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="LexChain" />
+    <!-- SEO -->
     <meta name="description" content="LexChain — Blockchain Evidence Management Platform for Indian Courts. Securely upload, verify and manage digital evidence compliant with Section 65B IT Act." />
+    <meta name="keywords" content="blockchain, evidence, Indian courts, digital evidence, IT Act 65B, tamper-proof, law enforcement" />
+    <meta name="robots" content="index, follow" />
+    <!-- Open Graph -->
+    <meta property="og:title" content="LexChain — Blockchain Evidence Platform" />
+    <meta property="og:description" content="India's first blockchain-based court evidence ledger. Immutable, tamper-evident, and court-ready under IT Act Section 65B." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/logo.jpg" />
+    <!-- Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <title>LexChain — Blockchain Evidence Platform</title>
   </head>
   <body>
@@ -12,4 +30,3 @@
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
-

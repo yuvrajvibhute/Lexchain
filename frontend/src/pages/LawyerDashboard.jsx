@@ -10,34 +10,48 @@ const STYLES = `
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#1e3a6e;border-radius:2px}
-.glass{background:rgba(15,23,42,.7);backdrop-filter:blur(20px);border:1px solid rgba(212,160,23,.12);border-radius:14px;}
-.card{background:rgba(15,23,42,.7);border:1px solid rgba(212,160,23,.12);border-radius:12px;padding:20px;}
-.btn{cursor:pointer;background:linear-gradient(135deg,#d4a017,#b8860b);border:none;border-radius:8px;padding:9px 20px;color:#020818;font-family:inherit;font-size:13px;font-weight:700;transition:all .2s;}
+.glass{background:rgba(15,23,42,.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(212,160,23,.12);border-radius:14px;}
+.card{background:rgba(15,23,42,.7);border:1px solid rgba(212,160,23,.12);border-radius:12px;padding:18px;}
+.btn{cursor:pointer;background:linear-gradient(135deg,#d4a017,#b8860b);border:none;border-radius:8px;padding:10px 20px;color:#020818;font-family:inherit;font-size:13px;font-weight:700;transition:all .2s;min-height:40px;touch-action:manipulation;}
 .btn:hover{opacity:.85;transform:translateY(-1px);}
 .btn:disabled{opacity:.4;cursor:not-allowed;transform:none;}
-.btn-ghost{cursor:pointer;background:transparent;border:1px solid #1e3a6e;border-radius:8px;padding:8px 18px;color:#94a3b8;font-family:inherit;font-size:13px;transition:all .2s;}
+.btn-ghost{cursor:pointer;background:transparent;border:1px solid #1e3a6e;border-radius:8px;padding:8px 16px;color:#94a3b8;font-family:inherit;font-size:13px;transition:all .2s;min-height:36px;touch-action:manipulation;}
 .btn-ghost:hover{border-color:#d4a017;color:#e2e8f0;}
-.inp{width:100%;padding:10px 13px;background:rgba(5,7,13,.8);border:1px solid #1e3a6e;border-radius:8px;color:#e2e8f0;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s;}
+.inp{width:100%;padding:11px 13px;background:rgba(5,7,13,.8);border:1px solid #1e3a6e;border-radius:8px;color:#e2e8f0;font-size:16px;font-family:inherit;outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none;}
 .inp:focus{border-color:#d4a017;}
 .inp::placeholder{color:#475569;}
-.tab-btn{cursor:pointer;padding:8px 16px;border-bottom:2px solid transparent;color:#64748b;font-size:13px;font-weight:600;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.tab-btn{cursor:pointer;padding:10px 14px;border-bottom:2px solid transparent;color:#64748b;font-size:13px;font-weight:600;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;transition:all .15s;white-space:nowrap;min-height:40px;touch-action:manipulation;}
 .tab-btn.on{border-bottom-color:#d4a017;color:#e2e8f0;}
-.tab-scroll{overflow-x:auto;white-space:nowrap;}
-.lbl{font-size:10px;color:#64748b;letter-spacing:.1em;font-weight:600;margin-bottom:5px;}
+.tab-scroll{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tab-scroll::-webkit-scrollbar{display:none;}
+.lbl{font-size:10px;color:#64748b;letter-spacing:.1em;font-weight:600;margin-bottom:5px;text-transform:uppercase;}
 @keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .fadein{animation:fadein .3s ease;}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .spinner{width:22px;height:22px;border:2px solid #1e3a6e;border-top-color:#d4a017;border-radius:50%;animation:spin 1s linear infinite;}
-@media(max-width:640px){.pad{padding:16px!important;}.nav-row{flex-wrap:wrap;gap:8px!important;}}
-.dash-theme-btn{position:fixed;bottom:20px;right:20px;z-index:999;width:42px;height:42px;border-radius:50%;border:1px solid rgba(212,160,23,.35);background:rgba(15,23,42,.95);color:#d4a017;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:all .25s;}
+.dash-theme-btn{position:fixed;bottom:20px;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:999;width:44px;height:44px;border-radius:50%;border:1px solid rgba(212,160,23,.35);background:rgba(15,23,42,.95);color:#d4a017;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:all .25s;touch-action:manipulation;}
 .dash-theme-btn:hover{transform:scale(1.15) rotate(15deg);border-color:#d4a017;}
+
+/* Responsive */
+@media(max-width:768px){
+  .lawyer-pad{padding:14px!important;}
+  .nav-row{flex-wrap:wrap;gap:6px!important;}
+  .bar-info{display:none!important;}
+  .stat-grid{grid-template-columns:repeat(3,1fr)!important;gap:10px;}
+  .detail-grid{grid-template-columns:1fr!important;}
+  .card{padding:14px!important;}
+  .case-meta{flex-direction:column;gap:4px!important;}
+}
+@media(max-width:480px){
+  .stat-grid{grid-template-columns:repeat(3,1fr)!important;}
+}
 `;
 
 function StatusBadge({ status }) {
     const col = STATUS_COLOR[status] || "#64748b";
     const label = status?.replace("_", " ").toUpperCase() || "UNKNOWN";
-    return <span style={{ padding: "2px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700, background: col + "22", color: col }}>{label}</span>;
+    return <span style={{ padding: "2px 10px", borderRadius: 20, fontSize: 11, fontWeight: 700, background: col + "22", color: col, whiteSpace: "nowrap" }}>{label}</span>;
 }
 function formatDate(iso) { return iso ? new Date(iso).toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—"; }
 
@@ -74,7 +88,6 @@ export default function LawyerDashboard() {
     async function submitDocument() {
         if (!docName || !docText) return;
         setSubmitting(true);
-        // Store as evidence linked to the case
         const fd = new FormData();
         fd.append("name", docName); fd.append("type", "Document"); fd.append("caseNo", selected?.id || "");
         fd.append("caseId", selected?.id || ""); fd.append("officer", user?.name || "Lawyer"); fd.append("station", "Legal Chamber");
@@ -92,45 +105,49 @@ export default function LawyerDashboard() {
     const pending = cases.filter(c => c.status === "lawyer_assigned" || c.status === "under_review").length;
     const closed = cases.filter(c => c.status === "closed").length;
 
+    const navBg = isDark ? "rgba(15,23,42,.95)" : "rgba(245,242,232,.97)";
+    const pageBg = isDark ? "#05070d" : "#f0ede6";
+    const textPrimary = isDark ? "#e2e8f0" : "#1a1a2e";
+
     return (
-        <div style={{ minHeight: "100vh", background: isDark ? "#05070d" : "#f0ede6", fontFamily: "'Inter',sans-serif", color: isDark ? "#e2e8f0" : "#1a1a2e" }}>
+        <div style={{ minHeight: "100vh", minHeight: "100dvh", background: pageBg, fontFamily: "'Inter',sans-serif", color: textPrimary }}>
             <style>{STYLES}</style>
-            <button className="dash-theme-btn" onClick={toggleTheme} title={isDark ? "Light Mode" : "Dark Mode"}>{isDark ? "☀️" : "🌙"}</button>
+            <button className="dash-theme-btn" onClick={toggleTheme} title={isDark ? "Light Mode" : "Dark Mode"} aria-label="Toggle theme">{isDark ? "☀️" : "🌙"}</button>
 
             {/* Navbar */}
-            <div style={{ background: "rgba(15,23,42,.95)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(212,160,23,.1)", padding: "0 24px", position: "sticky", top: 0, zIndex: 50 }}>
-                <div className="nav-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 60, gap: 12 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer", flexShrink: 0 }} onClick={() => navigate("/")}>
-                        <img src="/logo.jpg" alt="LexChain" style={{ height: 32, borderRadius: 7 }} />
+            <div style={{ background: navBg, backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(212,160,23,.1)", padding: "0 16px", position: "sticky", top: 0, zIndex: 50 }}>
+                <div className="nav-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", minHeight: 60, gap: 8, padding: "8px 0" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }} onClick={() => navigate("/")}>
+                        <img src="/logo.jpg" alt="LexChain" style={{ height: 30, borderRadius: 7 }} />
                         <div>
                             <div style={{ fontSize: 13, fontWeight: 800 }}>LEXCHAIN</div>
                             <div style={{ fontSize: 9, color: "#475569", letterSpacing: ".1em" }}>LAWYER PORTAL</div>
                         </div>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-                        {user?.barCouncilId && <div style={{ fontSize: 11, color: "#475569", fontFamily: "monospace" }}>{user.barCouncilId}</div>}
-                        <div style={{ background: "rgba(212,160,23,.12)", border: "1px solid rgba(212,160,23,.25)", borderRadius: 8, padding: "4px 10px", color: "#d4a017", fontSize: 11, fontWeight: 700 }}>⚖️ {displayName}</div>
-                        {!user?.verified && <div style={{ background: "rgba(245,158,11,.1)", border: "1px solid rgba(245,158,11,.25)", borderRadius: 7, padding: "3px 8px", color: "#fbbf24", fontSize: 11 }}>⏳ Pending Verification</div>}
-                        <button className="btn-ghost" style={{ padding: "5px 12px", fontSize: 11 }} onClick={() => { logout(); navigate("/"); }}>Sign Out</button>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                        <div className="bar-info" style={{ fontSize: 11, color: "#475569", fontFamily: "monospace" }}>{user?.barCouncilId}</div>
+                        <div style={{ background: "rgba(212,160,23,.12)", border: "1px solid rgba(212,160,23,.25)", borderRadius: 8, padding: "4px 10px", color: "#d4a017", fontSize: 11, fontWeight: 700, maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>⚖️ {displayName}</div>
+                        {!user?.verified && <div style={{ background: "rgba(245,158,11,.1)", border: "1px solid rgba(245,158,11,.25)", borderRadius: 7, padding: "3px 8px", color: "#fbbf24", fontSize: 11 }}>⏳ Pending</div>}
+                        <button className="btn-ghost" style={{ padding: "5px 10px", fontSize: 11 }} onClick={() => { logout(); navigate("/"); }}>Sign Out</button>
                     </div>
                 </div>
-                <div className="tab-scroll" style={{ display: "flex", gap: 2, borderTop: "1px solid rgba(212,160,23,.06)", justifyContent: "center" }}>
-                    {[["cases", "📋 My Cases"], ["documents", "📄 Upload Document"], ["profile", "👤 My Profile"]].map(([k, v]) => (
+                <div className="tab-scroll" style={{ display: "flex", gap: 0, borderTop: "1px solid rgba(212,160,23,.06)" }}>
+                    {[["cases", "📋 My Cases"], ["documents", "📄 Upload Doc"], ["profile", "👤 Profile"]].map(([k, v]) => (
                         <button key={k} className={`tab-btn ${tab === k ? "on" : ""}`} onClick={() => { setTab(k); if (k === "cases") { setSelected(null); fetchCases(); } }}>{v}</button>
                     ))}
-                    {selected && <button className={`tab-btn ${tab === "detail" ? "on" : ""}`} onClick={() => setTab("detail")}>🗂 Case: {selected.id}</button>}
+                    {selected && <button className={`tab-btn ${tab === "detail" ? "on" : ""}`} onClick={() => setTab("detail")}>🗂 {selected.id?.slice(-8)}</button>}
                 </div>
             </div>
 
-            <div className="pad" style={{ padding: "28px 24px", maxWidth: 1050, margin: "0 auto" }}>
+            <div className="lawyer-pad" style={{ padding: "20px 16px", maxWidth: 1050, margin: "0 auto" }}>
 
                 {/* Stats */}
                 {tab !== "detail" && (
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 14, marginBottom: 24 }}>
+                    <div className="stat-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(120px,1fr))", gap: 12, marginBottom: 20 }}>
                         {[["Total Cases", cases.length, "#3b82f6", "📋"], ["Active", pending, "#d4a017", "⚖️"], ["Closed", closed, "#22c55e", "✅"]].map(([l, v, c, i]) => (
                             <div key={l} className="card">
-                                <div style={{ fontSize: 20, marginBottom: 6 }}>{i}</div>
-                                <div style={{ fontSize: 28, fontWeight: 800, color: c, fontFamily: "monospace" }}>{v}</div>
+                                <div style={{ fontSize: 18, marginBottom: 6 }}>{i}</div>
+                                <div style={{ fontSize: 26, fontWeight: 800, color: c, fontFamily: "monospace" }}>{v}</div>
                                 <div style={{ fontSize: 10, color: "#475569", marginTop: 3, letterSpacing: ".08em" }}>{l.toUpperCase()}</div>
                             </div>
                         ))}
@@ -152,16 +169,17 @@ export default function LawyerDashboard() {
                                 <div key={c.id} className="card fadein" style={{ marginBottom: 12, cursor: "pointer", transition: "border-color .2s" }} onClick={() => loadCase(c)}
                                     onMouseEnter={e => e.currentTarget.style.borderColor = "rgba(212,160,23,.35)"}
                                     onMouseLeave={e => e.currentTarget.style.borderColor = "rgba(212,160,23,.12)"}>
-                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flexstart", flexWrap: "wrap", gap: 10 }}>
-                                        <div>
+                                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10 }}>
+                                        <div style={{ flex: 1, minWidth: 0 }}>
                                             <div style={{ fontWeight: 700, fontSize: 14, color: "#e2e8f0", marginBottom: 4 }}>{c.title}</div>
-                                            <div style={{ fontSize: 12, color: "#475569", marginBottom: 8 }}>
-                                                <span style={{ color: "#60a5fa", fontFamily: "monospace", marginRight: 12 }}>{c.id}</span>
-                                                <span>{c.category}</span> · <span>Filed {new Date(c.createdAt).toLocaleDateString()}</span>
+                                            <div className="case-meta" style={{ fontSize: 12, color: "#475569", marginBottom: 8, display: "flex", flexWrap: "wrap", gap: 6 }}>
+                                                <span style={{ color: "#60a5fa", fontFamily: "monospace" }}>{c.id}</span>
+                                                <span>{c.category}</span>
+                                                <span>· {new Date(c.createdAt).toLocaleDateString()}</span>
                                             </div>
                                             <div style={{ fontSize: 12, color: "#94a3b8" }}>👤 Client: <strong>{c.filedByName}</strong></div>
                                         </div>
-                                        <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-end" }}>
+                                        <div style={{ display: "flex", flexDirection: "column", gap: 6, alignItems: "flex-end", flexShrink: 0 }}>
                                             <StatusBadge status={c.status} />
                                             <span style={{ fontSize: 11, color: "#475569" }}>View Details →</span>
                                         </div>
@@ -174,18 +192,18 @@ export default function LawyerDashboard() {
                 {/* Case Detail */}
                 {tab === "detail" && selected && (
                     <div className="fadein">
-                        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 18, flexWrap: "wrap" }}>
                             <button className="btn-ghost" onClick={() => { setTab("cases"); setSelected(null); }}>← Back</button>
                             <span style={{ fontSize: 11, color: "#475569", fontFamily: "monospace" }}>CASE DETAIL · {selected.id}</span>
                             <div style={{ marginLeft: "auto" }}><StatusBadge status={selected.status} /></div>
                         </div>
-                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(300px,1fr))", gap: 18, marginBottom: 18 }}>
+                        <div className="detail-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 16, marginBottom: 16 }}>
                             <div className="card">
                                 <div style={{ fontSize: 11, color: "#475569", letterSpacing: ".1em", marginBottom: 14 }}>CASE INFORMATION</div>
                                 {[["Title", selected.title], ["Category", selected.category], ["Location", selected.location || "—"], ["Incident Date", selected.incidentDate || "—"], ["Filed By", selected.filedByName], ["Opponent", selected.opponentName || "—"], ["Filed", formatDate(selected.createdAt)]].map(([k, v]) => (
                                     <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid rgba(212,160,23,.06)", fontSize: 13, gap: 8 }}>
                                         <span style={{ color: "#64748b", flexShrink: 0 }}>{k}</span>
-                                        <span style={{ color: "#94a3b8", textAlign: "right" }}>{v}</span>
+                                        <span style={{ color: "#94a3b8", textAlign: "right", wordBreak: "break-word" }}>{v}</span>
                                     </div>
                                 ))}
                             </div>
@@ -196,7 +214,7 @@ export default function LawyerDashboard() {
                                     <>
                                         <div style={{ fontSize: 11, color: "#475569", letterSpacing: ".1em", marginTop: 16, marginBottom: 10 }}>EVIDENCE ({selected.evidence.length})</div>
                                         {selected.evidence.map(ev => (
-                                            <div key={ev.id} style={{ display: "flex", justifyContent: "space-between", padding: "7px 10px", background: "rgba(5,7,13,.5)", borderRadius: 8, marginBottom: 6, fontSize: 12 }}>
+                                            <div key={ev.id} style={{ display: "flex", justifyContent: "space-between", padding: "7px 10px", background: "rgba(5,7,13,.5)", borderRadius: 8, marginBottom: 6, fontSize: 12, flexWrap: "wrap", gap: 6 }}>
                                                 <span style={{ color: "#cbd5e1" }}>📄 {ev.name}</span>
                                                 <span style={{ color: ev.courtApproval === "approved" ? "#22c55e" : ev.courtApproval === "rejected" ? "#ef4444" : "#f59e0b", fontSize: 11 }}>
                                                     {ev.courtApproval === "approved" ? "✅ Approved" : ev.courtApproval === "rejected" ? "❌ Rejected" : "⏳ Pending"}
@@ -210,7 +228,7 @@ export default function LawyerDashboard() {
 
                         {/* Hearings */}
                         {(selected.hearings || []).length > 0 && (
-                            <div className="card" style={{ marginBottom: 18 }}>
+                            <div className="card" style={{ marginBottom: 16 }}>
                                 <div style={{ fontSize: 11, color: "#475569", letterSpacing: ".1em", marginBottom: 14 }}>📅 SCHEDULED HEARINGS</div>
                                 {selected.hearings.map((h, i) => (
                                     <div key={h.id} style={{ display: "flex", justifyContent: "space-between", padding: "10px 0", borderBottom: "1px solid rgba(212,160,23,.06)", fontSize: 13, flexWrap: "wrap", gap: 8 }}>
@@ -235,7 +253,7 @@ export default function LawyerDashboard() {
                                             <span style={{ color: o.verdict === "acquitted" ? "#22c55e" : o.verdict === "convicted" ? "#ef4444" : "#f59e0b", fontSize: 11, fontWeight: 700 }}>{o.verdict?.toUpperCase()}</span>
                                         </div>
                                         <p style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.7 }}>{o.orderText}</p>
-                                        <div style={{ fontSize: 10, color: "#334155", marginTop: 8, fontFamily: "monospace" }}>Hash: {o.hash?.slice(0, 30)}...</div>
+                                        <div style={{ fontSize: 10, color: "#334155", marginTop: 8, fontFamily: "monospace", wordBreak: "break-all" }}>Hash: {o.hash?.slice(0, 30)}...</div>
                                     </div>
                                 ))}
                             </div>
@@ -284,9 +302,9 @@ export default function LawyerDashboard() {
                                 <div style={{ marginTop: 10 }}>{user?.verified ? <span style={{ color: "#22c55e", fontSize: 12, fontWeight: 700 }}>✅ Verified Lawyer</span> : <span style={{ color: "#f59e0b", fontSize: 12 }}>⏳ Awaiting Admin Verification</span>}</div>
                             </div>
                             {[["Bar Council ID", user?.barCouncilId], ["License No.", user?.licenseNo], ["Specialization", user?.specialization], ["Experience", user?.experience ? `${user.experience} years` : "—"], ["Consultation Fee", user?.fee ? `₹${user.fee}` : "—"], ["City", user?.city], ["Phone", user?.phone]].map(([k, v]) => (
-                                <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", borderBottom: "1px solid rgba(212,160,23,.07)", fontSize: 13, gap: 8 }}>
+                                <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", borderBottom: "1px solid rgba(212,160,23,.07)", fontSize: 13, gap: 8, flexWrap: "wrap" }}>
                                     <span style={{ color: "#64748b" }}>{k}</span>
-                                    <span style={{ color: "#94a3b8" }}>{v || "—"}</span>
+                                    <span style={{ color: "#94a3b8", wordBreak: "break-word", textAlign: "right" }}>{v || "—"}</span>
                                 </div>
                             ))}
                         </div>

@@ -11,35 +11,55 @@ const STYLES = `
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap');
 *{box-sizing:border-box;margin:0;padding:0;}
 ::-webkit-scrollbar{width:4px;height:4px}::-webkit-scrollbar-thumb{background:#1e3a6e;border-radius:2px}
-.glass{background:rgba(15,23,42,.7);backdrop-filter:blur(20px);border:1px solid rgba(59,130,246,.12);border-radius:16px;}
-.card{background:rgba(15,23,42,.7);border:1px solid rgba(59,130,246,.12);border-radius:12px;padding:18px;}
-.btn-blue{cursor:pointer;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border:none;border-radius:8px;padding:10px 22px;color:#fff;font-family:inherit;font-size:13px;font-weight:700;transition:opacity .2s;}
+.glass{background:rgba(15,23,42,.7);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(59,130,246,.12);border-radius:16px;}
+.card{background:rgba(15,23,42,.7);border:1px solid rgba(59,130,246,.12);border-radius:12px;padding:16px;}
+.btn-blue{cursor:pointer;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border:none;border-radius:8px;padding:10px 22px;color:#fff;font-family:inherit;font-size:13px;font-weight:700;transition:opacity .2s;min-height:40px;touch-action:manipulation;}
 .btn-blue:hover{opacity:.85;}
 .btn-blue:disabled{opacity:.4;cursor:not-allowed;}
-.btn-ghost{cursor:pointer;background:transparent;border:1px solid #1e3a6e;border-radius:8px;padding:8px 18px;color:#94a3b8;font-family:inherit;font-size:13px;transition:all .2s;}
+.btn-ghost{cursor:pointer;background:transparent;border:1px solid #1e3a6e;border-radius:8px;padding:8px 16px;color:#94a3b8;font-family:inherit;font-size:13px;transition:all .2s;min-height:36px;touch-action:manipulation;}
 .btn-ghost:hover{border-color:#3b82f6;color:#e2e8f0;}
-.btn-gold{cursor:pointer;background:linear-gradient(135deg,#d4a017,#b8860b);border:none;border-radius:8px;padding:8px 16px;color:#020818;font-family:inherit;font-size:12px;font-weight:700;transition:all .2s;}
+.btn-gold{cursor:pointer;background:linear-gradient(135deg,#d4a017,#b8860b);border:none;border-radius:8px;padding:8px 16px;color:#020818;font-family:inherit;font-size:12px;font-weight:700;transition:all .2s;min-height:36px;touch-action:manipulation;}
 .btn-gold:hover{opacity:.85;}
-.inp{width:100%;padding:10px 13px;background:rgba(5,7,13,.8);border:1px solid #1e3a6e;border-radius:8px;color:#e2e8f0;font-size:13px;font-family:inherit;outline:none;transition:border-color .2s;}
+.inp{width:100%;padding:11px 13px;background:rgba(5,7,13,.8);border:1px solid #1e3a6e;border-radius:8px;color:#e2e8f0;font-size:16px;font-family:inherit;outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none;}
 .inp:focus{border-color:#3b82f6;}
 .inp::placeholder{color:#475569;}
 .inp option{background:#0a1628;}
-.tab-btn{cursor:pointer;padding:8px 15px;border-bottom:2px solid transparent;color:#64748b;font-size:13px;font-weight:600;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.tab-btn{cursor:pointer;padding:10px 12px;border-bottom:2px solid transparent;color:#64748b;font-size:12px;font-weight:600;background:none;border-top:none;border-left:none;border-right:none;font-family:inherit;transition:all .15s;white-space:nowrap;min-height:40px;touch-action:manipulation;}
 .tab-btn.on{border-bottom-color:#3b82f6;color:#e2e8f0;}
-.tab-scroll{overflow-x:auto;white-space:nowrap;}
-.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:22px;}
-.lbl{font-size:10px;color:#64748b;letter-spacing:.1em;font-weight:600;margin-bottom:5px;}
-.lawyer-card{background:rgba(15,23,42,.75);border:1px solid rgba(212,160,23,.15);border-radius:12px;padding:18px;transition:border-color .2s,transform .2s;}
+.tab-scroll{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tab-scroll::-webkit-scrollbar{display:none;}
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin-bottom:18px;}
+.lbl{font-size:10px;color:#64748b;letter-spacing:.1em;font-weight:600;margin-bottom:5px;text-transform:uppercase;}
+.lawyer-card{background:rgba(15,23,42,.75);border:1px solid rgba(212,160,23,.15);border-radius:12px;padding:16px;transition:border-color .2s,transform .2s;}
 .lawyer-card:hover{border-color:rgba(212,160,23,.45);transform:translateY(-2px);}
 @keyframes fadein{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 .fadein{animation:fadein .3s ease;}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 .spinner{width:22px;height:22px;border:2px solid #1e3a6e;border-top-color:#3b82f6;border-radius:50%;animation:spin 1s linear infinite;}
-@media(max-width:640px){.pad{padding:14px!important;}.nav-row{flex-wrap:wrap;gap:8px!important;}.stat-grid{grid-template-columns:1fr 1fr!important;}}
-@media(max-width:400px){.stat-grid{grid-template-columns:1fr!important;}}
-.dash-theme-btn{position:fixed;bottom:20px;right:20px;z-index:999;width:42px;height:42px;border-radius:50%;border:1px solid rgba(212,160,23,.35);background:rgba(15,23,42,.95);color:#d4a017;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:all .25s;}
+.dash-theme-btn{position:fixed;bottom:20px;right:20px;bottom:calc(20px + env(safe-area-inset-bottom));z-index:999;width:44px;height:44px;border-radius:50%;border:1px solid rgba(212,160,23,.35);background:rgba(15,23,42,.95);color:#d4a017;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;box-shadow:0 4px 20px rgba(0,0,0,.4);transition:all .25s;touch-action:manipulation;}
 .dash-theme-btn:hover{transform:scale(1.15) rotate(15deg);border-color:#d4a017;}
+
+/* Responsive */
+@media(max-width:768px){
+  .user-pad{padding:14px!important;}
+  .nav-row{flex-wrap:wrap;gap:6px!important;}
+  .city-info{display:none!important;}
+  .stat-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .case-detail-grid{grid-template-columns:1fr!important;}
+  .file-case-grid{grid-template-columns:1fr!important;}
+  .upload-grid{grid-template-columns:1fr!important;}
+  .lawyer-filters{grid-template-columns:1fr 1fr!important;}
+  .lawyer-grid{grid-template-columns:1fr!important;}
+  .card{padding:14px!important;}
+  .hire-modal-inner{padding:20px!important;}
+}
+@media(max-width:480px){
+  .stat-grid{grid-template-columns:repeat(2,1fr)!important;}
+  .lawyer-filters{grid-template-columns:1fr!important;}
+  .hire-btns{flex-direction:column!important;}
+  .hire-btns > *{width:100%!important;}
+}
 `;
 
 function StatusBadge({ status }) {
@@ -225,29 +245,29 @@ export default function UserDashboard() {
             <button className="dash-theme-btn" onClick={toggleTheme} title={isDark ? "Light Mode" : "Dark Mode"}>{isDark ? "☀️" : "🌙"}</button>
 
             {/* Navbar */}
-            <div style={{ background: "rgba(15,23,42,.95)", backdropFilter: "blur(20px)", borderBottom: "1px solid rgba(59,130,246,.1)", padding: "0 24px", position: "sticky", top: 0, zIndex: 50 }}>
-                <div className="nav-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", height: 60, gap: 10 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 12, cursor: "pointer" }} onClick={() => navigate("/")}>
-                        <img src="/logo.jpg" alt="LexChain" style={{ height: 32, borderRadius: 7 }} />
+            <div style={{ background: isDark ? "rgba(15,23,42,.95)" : "rgba(244,241,234,.97)", backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)", borderBottom: "1px solid rgba(59,130,246,.1)", padding: "0 16px", position: "sticky", top: 0, zIndex: 50 }}>
+                <div className="nav-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", minHeight: 60, gap: 8, padding: "8px 0" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, cursor: "pointer", flexShrink: 0 }} onClick={() => navigate("/")}>
+                        <img src="/logo.jpg" alt="LexChain" style={{ height: 30, borderRadius: 7 }} />
                         <div>
                             <div style={{ fontSize: 13, fontWeight: 800 }}>LEXCHAIN</div>
                             <div style={{ fontSize: 9, color: "#475569", letterSpacing: ".1em" }}>CITIZEN PORTAL</div>
                         </div>
                     </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
-                        <div style={{ background: "rgba(29,78,216,.15)", border: "1px solid rgba(59,130,246,.2)", borderRadius: 8, padding: "4px 10px", color: "#93c5fd", fontSize: 11, fontWeight: 700 }}>👤 {displayName}</div>
-                        {user?.city && <div style={{ color: "#475569", fontSize: 11 }}>📍 {user.city}</div>}
-                        <button className="btn-ghost" style={{ padding: "5px 12px", fontSize: 11 }} onClick={() => { logout(); navigate("/"); }}>Sign Out</button>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                        <div style={{ background: "rgba(29,78,216,.15)", border: "1px solid rgba(59,130,246,.2)", borderRadius: 8, padding: "4px 10px", color: "#93c5fd", fontSize: 11, fontWeight: 700, maxWidth: 130, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>👤 {displayName}</div>
+                        {user?.city && <div className="city-info" style={{ color: "#475569", fontSize: 11 }}>📍 {user.city}</div>}
+                        <button className="btn-ghost" style={{ padding: "5px 10px", fontSize: 11 }} onClick={() => { logout(); navigate("/"); }}>Sign Out</button>
                     </div>
                 </div>
-                <div className="tab-scroll" style={{ display: "flex", gap: 2, borderTop: "1px solid rgba(59,130,246,.06)", justifyContent: "center" }}>
+                <div className="tab-scroll" style={{ display: "flex", gap: 0, borderTop: "1px solid rgba(59,130,246,.06)" }}>
                     {[
-                        ["track", "🔍 Track Cases"],
+                        ["track", "🔍 Track"],
                         ["file-case", "📋 File Case"],
                         ["hearings", "📅 Hearings"],
                         ["marketplace", "⚖️ Lawyers"],
-                        ["upload", "⬆ Upload Evidence"],
-                        ["evidence", "🗂 Evidence"],
+                        ["upload", "⬆ Evidence"],
+                        ["evidence", "🗂 Registry"],
                         ["requests", "🔔 Requests" + (pendingCount > 0 ? ` (${pendingCount})` : "")]
                     ].map(([k, v]) => (
                         <button key={k} className={`tab-btn ${tab === k ? "on" : ""}`} onClick={() => { setTab(k); setSelectedCase(null); setFilingDone(null); setUploadDone(null); setHiringLawyer(null); }}>{v}</button>
@@ -255,7 +275,7 @@ export default function UserDashboard() {
                 </div>
             </div>
 
-            <div className="pad" style={{ padding: "24px 24px", maxWidth: 1050, margin: "0 auto" }}>
+            <div className="user-pad" style={{ padding: "18px 16px", maxWidth: 1050, margin: "0 auto" }}>
 
                 {/* ── TRACK CASES ── */}
                 {tab === "track" && (
@@ -310,7 +330,7 @@ export default function UserDashboard() {
                                     <span style={{ fontSize: 11, color: "#475569", fontFamily: "monospace" }}>CASE DETAIL · {selectedCase.id}</span>
                                     <div style={{ marginLeft: "auto" }}><StatusBadge status={selectedCase.status} /></div>
                                 </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))", gap: 16, marginBottom: 16 }}>
+                                <div className="case-detail-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 14, marginBottom: 14 }}>
                                     <div className="card">
                                         <div style={{ fontSize: 11, color: "#475569", letterSpacing: ".1em", marginBottom: 12 }}>CASE INFO</div>
                                         {[["Case ID", selectedCase.id], ["Title", selectedCase.title], ["Category", selectedCase.category], ["Location", selectedCase.location || "—"], ["Incident Date", selectedCase.incidentDate || "—"], ["Opponent", selectedCase.opponentName || "—"], ["Lawyer", selectedCase.assignedLawyerName || "Not assigned"], ["Judge", selectedCase.assignedJudgeName || "Not assigned"]].map(([k, v]) => (
@@ -409,7 +429,7 @@ export default function UserDashboard() {
                                         <div className="lbl">CASE TITLE <span style={{ color: "#ef4444" }}>*</span></div>
                                         <input className="inp" placeholder="Short, descriptive title of your case" value={caseForm.title} onChange={e => setCaseForm(p => ({ ...p, title: e.target.value }))} />
                                     </div>
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }} className="file-case-grid">
                                         <div>
                                             <div className="lbl">CATEGORY <span style={{ color: "#ef4444" }}>*</span></div>
                                             <select className="inp" value={caseForm.category} onChange={e => setCaseForm(p => ({ ...p, category: e.target.value }))}>
@@ -426,7 +446,7 @@ export default function UserDashboard() {
                                         <div className="lbl">DESCRIPTION <span style={{ color: "#ef4444" }}>*</span></div>
                                         <textarea className="inp" rows={5} placeholder="Detailed description of the incident, what happened, how it happened..." value={caseForm.description} onChange={e => setCaseForm(p => ({ ...p, description: e.target.value }))} style={{ resize: "vertical", lineHeight: 1.7 }} />
                                     </div>
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }} className="file-case-grid">
                                         <div>
                                             <div className="lbl">LOCATION / ADDRESS</div>
                                             <input className="inp" placeholder="Where the incident occurred" value={caseForm.location} onChange={e => setCaseForm(p => ({ ...p, location: e.target.value }))} />
@@ -505,7 +525,7 @@ export default function UserDashboard() {
 
                         {/* Filters */}
                         <div className="card" style={{ marginBottom: 18 }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 12 }}>
+                            <div className="lawyer-filters" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 12 }}>
                                 <div>
                                     <div className="lbl">SPECIALIZATION</div>
                                     <select className="inp" value={filterSpec} onChange={e => setFilterSpec(e.target.value)}>
@@ -542,7 +562,7 @@ export default function UserDashboard() {
                                     {myCases.filter(c => !c.assignedLawyer && c.status !== "closed").length === 0 && (
                                         <div style={{ fontSize: 13, color: "#f59e0b", marginTop: 10 }}>No open cases without a lawyer. File a case first.</div>
                                     )}
-                                    <div style={{ display: "flex", gap: 10, marginTop: 20 }}>
+                                     <div className="hire-btns" style={{ display: "flex", gap: 10, marginTop: 20 }}>
                                         <button className="btn-blue" style={{ flex: 1 }} onClick={hireLawyer} disabled={!hireCase}>✓ Confirm Hire</button>
                                         <button className="btn-ghost" style={{ flex: 1 }} onClick={() => { setHiringLawyer(null); setHireCase(""); }}>Cancel</button>
                                     </div>
@@ -553,7 +573,7 @@ export default function UserDashboard() {
                         {lawyersLoading ? <div style={{ textAlign: "center", padding: 40, color: "#475569" }}><div className="spinner" style={{ margin: "0 auto 12px" }} />Loading lawyers...</div>
                             : lawyers.length === 0 ? <div className="glass" style={{ padding: 40, textAlign: "center", color: "#475569" }}>No lawyers found for that filter.</div>
                                 : (
-                                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 16 }}>
+                                    <div className="lawyer-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(280px,1fr))", gap: 14 }}>
                                         {lawyers.map(l => (
                                             <div key={l.id} className="lawyer-card">
                                                 <div style={{ display: "flex", gap: 12, alignItems: "flex-start", marginBottom: 14 }}>
@@ -593,7 +613,7 @@ export default function UserDashboard() {
                                         <div className="lbl">EVIDENCE NAME <span style={{ color: "#ef4444" }}>*</span></div>
                                         <input className="inp" placeholder="e.g. FIR_2024_Case.pdf" value={uploadForm.name} onChange={e => setUploadForm(p => ({ ...p, name: e.target.value }))} />
                                     </div>
-                                    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+                                    <div className="upload-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                                         <div>
                                             <div className="lbl">CASE NUMBER <span style={{ color: "#ef4444" }}>*</span></div>
                                             <input className="inp" placeholder="e.g. CR-2024-001" value={uploadForm.caseNo} onChange={e => setUploadForm(p => ({ ...p, caseNo: e.target.value }))} />
