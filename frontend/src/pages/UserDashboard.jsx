@@ -647,12 +647,24 @@ export default function UserDashboard() {
                             <div className="glass fadein" style={{ padding: 36, textAlign: "center" }}>
                                 <div style={{ fontSize: 52, marginBottom: 14 }}>✅</div>
                                 <div style={{ fontSize: 20, fontWeight: 800, color: "#22c55e", marginBottom: 10 }}>Evidence Anchored!</div>
-                                {[["Evidence ID", uploadDone.id], ["TX Hash", uploadDone.txHash?.slice(0, 26) + "..."], ["IPFS CID", uploadDone.ipfsCid?.slice(0, 20) + "..."], ["Block", `#${uploadDone.blockHeight?.toLocaleString()}`]].map(([k, v]) => (
+                                {[["Evidence ID", uploadDone.id], ["TX Hash", uploadDone.txHash?.slice(0, 26) + "..."], ["IPFS CID", uploadDone.ipfsCid?.slice(0, 22) + "..."], ["Block", `#${uploadDone.blockHeight?.toLocaleString()}`]].map(([k, v]) => (
                                     <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid rgba(59,130,246,.08)", fontSize: 12, gap: 8 }}>
                                         <span style={{ color: "#475569" }}>{k}</span><span style={{ color: "#94a3b8", fontFamily: "monospace" }}>{v}</span>
                                     </div>
                                 ))}
-                                <button className="btn-ghost" style={{ marginTop: 18 }} onClick={() => setUploadDone(null)}>Upload Another</button>
+                                {uploadDone.ipfsUrl && uploadDone.ipfsCid !== 'IPFS_UPLOAD_FAILED' && (
+                                    <a
+                                        href={uploadDone.ipfsUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 16, padding: "11px 18px", background: "linear-gradient(135deg,#0d9488,#0891b2)", borderRadius: 9, color: "#fff", fontWeight: 700, fontSize: 13, textDecoration: "none", transition: "opacity .2s" }}
+                                        onMouseEnter={e => e.currentTarget.style.opacity = ".82"}
+                                        onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                                    >
+                                        🌐 View on IPFS (Pinata Gateway) →
+                                    </a>
+                                )}
+                                <button className="btn-ghost" style={{ marginTop: 12 }} onClick={() => setUploadDone(null)}>Upload Another</button>
                             </div>
                         )}
                     </div>
@@ -673,11 +685,24 @@ export default function UserDashboard() {
                                                     <span style={{ color: "#60a5fa" }}>{ev.id}</span> · {ev.caseNo} · {new Date(ev.timestamp).toLocaleDateString()}
                                                 </div>
                                             </div>
-                                            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                                            <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
                                                 <span style={{ fontSize: 11, padding: "2px 10px", background: (TYPE_COLOR[ev.type] || "#64748b") + "22", color: TYPE_COLOR[ev.type] || "#64748b", borderRadius: 20, fontWeight: 700 }}>{ev.type}</span>
                                                 <span style={{ fontSize: 11, color: ev.courtApproval === "approved" ? "#22c55e" : ev.courtApproval === "rejected" ? "#ef4444" : "#f59e0b", fontWeight: 700 }}>
                                                     {ev.courtApproval === "approved" ? "✅ Approved" : ev.courtApproval === "rejected" ? "❌ Rejected" : "⏳ Pending Court"}
                                                 </span>
+                                                {ev.ipfsUrl && ev.ipfsCid !== 'IPFS_UPLOAD_FAILED' && (
+                                                    <a
+                                                        href={ev.ipfsUrl}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                        title={`IPFS CID: ${ev.ipfsCid}`}
+                                                        style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", background: "rgba(13,148,136,.15)", border: "1px solid rgba(13,148,136,.35)", borderRadius: 20, color: "#2dd4bf", fontSize: 11, fontWeight: 700, textDecoration: "none", transition: "all .2s" }}
+                                                        onMouseEnter={e => { e.currentTarget.style.background = "rgba(13,148,136,.3)"; }}
+                                                        onMouseLeave={e => { e.currentTarget.style.background = "rgba(13,148,136,.15)"; }}
+                                                    >
+                                                        🌐 IPFS
+                                                    </a>
+                                                )}
                                             </div>
                                         </div>
                                     </div>

@@ -5,8 +5,9 @@ const EvidenceSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   name: String,
   type: String,
-  hash: { type: String, unique: true },
+  hash: { type: String },
   ipfsCid: String,
+  ipfsUrl: String,
   uploadedBy: String,
   station: String,
   caseNo: String,
@@ -108,6 +109,7 @@ const CourtOrderSchema = new mongoose.Schema({
 
 // --- Access Request Schema ---
 const AccessRequestSchema = new mongoose.Schema({
+  id: { type: String },
   evidenceId: String,
   adminId: String,
   adminName: String,
@@ -115,6 +117,18 @@ const AccessRequestSchema = new mongoose.Schema({
   targetUserId: String,
   status: { type: String, default: 'pending' },
   createdAt: { type: Date, default: Date.now }
+});
+// Auto-set id = _id.toString() before save
+AccessRequestSchema.pre('save', function(next) {
+  if (!this.id) this.id = this._id.toString();
+  next();
+});
+// Also handle findOneAndUpdate + create path
+AccessRequestSchema.post('save', function(doc) {
+  if (!doc.id) {
+    doc.id = doc._id.toString();
+    doc.save().catch(() => {});
+  }
 });
 
 // --- Lawyer Rating Schema ---

@@ -376,10 +376,24 @@ export default function AdminDashboard() {
                                         </div>
                                     ))}
                                     {title === "BLOCKCHAIN PROOF" && (
-                                        <div style={{ marginTop: 12, padding: 10, background: "rgba(5,7,13,.6)", borderRadius: 8, fontSize: 10, color: "#475569", wordBreak: "break-all", lineHeight: 1.8 }}>
-                                            <div style={{ color: "#3b82f6", marginBottom: 4, fontSize: 9, letterSpacing: ".1em" }}>FULL SHA-256 HASH</div>
-                                            {selected.hash}
-                                        </div>
+                                        <>
+                                            <div style={{ marginTop: 12, padding: 10, background: "rgba(5,7,13,.6)", borderRadius: 8, fontSize: 10, color: "#475569", wordBreak: "break-all", lineHeight: 1.8 }}>
+                                                <div style={{ color: "#3b82f6", marginBottom: 4, fontSize: 9, letterSpacing: ".1em" }}>FULL SHA-256 HASH</div>
+                                                {selected.hash}
+                                            </div>
+                                            {selected.ipfsUrl && selected.ipfsCid !== 'IPFS_UPLOAD_FAILED' && (
+                                                <a
+                                                    href={selected.ipfsUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 14, padding: "11px 16px", background: "linear-gradient(135deg,#0d9488,#0891b2)", borderRadius: 9, color: "#fff", fontWeight: 700, fontSize: 13, textDecoration: "none", transition: "opacity .2s" }}
+                                                    onMouseEnter={e => e.currentTarget.style.opacity = ".82"}
+                                                    onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                                                >
+                                                    🌐 View Evidence on IPFS →
+                                                </a>
+                                            )}
+                                        </>
                                     )}
                                 </div>
                             ))}
@@ -433,13 +447,25 @@ export default function AdminDashboard() {
                                 <div style={{ fontSize: 56, marginBottom: 14 }}>✅</div>
                                 <div style={{ fontSize: 20, fontWeight: 800, color: "#22c55e", marginBottom: 10 }}>EVIDENCE ANCHORED</div>
                                 <div style={{ fontSize: 13, color: "#475569", marginBottom: 24 }}>File hash recorded on-chain.</div>
-                                {[["TX Hash", shortHash(uploadData?.txHash)], ["Block", `#${uploadData?.blockHeight?.toLocaleString()}`], ["Evidence ID", uploadData?.id]].map(([k, v]) => (
+                                {[["TX Hash", shortHash(uploadData?.txHash)], ["Block", `#${uploadData?.blockHeight?.toLocaleString()}`], ["Evidence ID", uploadData?.id], ["IPFS CID", uploadData?.ipfsCid ? uploadData.ipfsCid.slice(0, 22) + "..." : "—"]].map(([k, v]) => (
                                     <div key={k} style={{ display: "flex", justifyContent: "space-between", padding: "7px 0", borderBottom: "1px solid rgba(59,130,246,.08)", fontSize: 12 }}>
                                         <span style={{ color: "#475569" }}>{k}</span>
                                         <span style={{ color: "#94a3b8", fontFamily: "monospace" }}>{v}</span>
                                     </div>
                                 ))}
-                                <button className="btn-ghost" style={{ marginTop: 20 }} onClick={() => { setUploadDone(false); setUploadForm({ name: "", type: "FIR", caseNo: "", officer: "", station: "" }); setFile(null); }}>Upload Another</button>
+                                {uploadData?.ipfsUrl && uploadData?.ipfsCid !== 'IPFS_UPLOAD_FAILED' && (
+                                    <a
+                                        href={uploadData.ipfsUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 18, padding: "11px 16px", background: "linear-gradient(135deg,#0d9488,#0891b2)", borderRadius: 9, color: "#fff", fontWeight: 700, fontSize: 13, textDecoration: "none", transition: "opacity .2s" }}
+                                        onMouseEnter={e => e.currentTarget.style.opacity = ".82"}
+                                        onMouseLeave={e => e.currentTarget.style.opacity = "1"}
+                                    >
+                                        🌐 View Evidence on IPFS →
+                                    </a>
+                                )}
+                                <button className="btn-ghost" style={{ marginTop: 14 }} onClick={() => { setUploadDone(false); setUploadForm({ name: "", type: "FIR", caseNo: "", officer: "", station: "" }); setFile(null); }}>Upload Another</button>
                             </div>
                         )}
                     </div>
@@ -589,9 +615,22 @@ export default function AdminDashboard() {
                                         <div style={{ fontSize: 14, fontWeight: 700, color: "#e2e8f0", marginBottom: 4 }}>{ev.name}</div>
                                         <div style={{ fontSize: 12, color: "#475569" }}>{ev.caseNo} · {ev.uploadedBy} · {ev.station}</div>
                                     </div>
-                                    <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                                    <div style={{ display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
                                         <TypeBadge type={ev.type} />
                                         <StatusBadge status={ev.status} />
+                                        {ev.ipfsUrl && ev.ipfsCid !== 'IPFS_UPLOAD_FAILED' && (
+                                            <a
+                                                href={ev.ipfsUrl}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                title={`IPFS CID: ${ev.ipfsCid}`}
+                                                style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 12px", background: "rgba(13,148,136,.15)", border: "1px solid rgba(13,148,136,.35)", borderRadius: 20, color: "#2dd4bf", fontSize: 11, fontWeight: 700, textDecoration: "none", transition: "all .2s" }}
+                                                onMouseEnter={e => { e.currentTarget.style.background = "rgba(13,148,136,.3)"; }}
+                                                onMouseLeave={e => { e.currentTarget.style.background = "rgba(13,148,136,.15)"; }}
+                                            >
+                                                🌐 View on IPFS
+                                            </a>
+                                        )}
                                     </div>
                                 </div>
                                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 12, background: "rgba(5,7,13,.5)", borderRadius: 8, padding: 12, fontSize: 12 }}>

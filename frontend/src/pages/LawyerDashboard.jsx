@@ -110,7 +110,7 @@ export default function LawyerDashboard() {
     const textPrimary = isDark ? "#e2e8f0" : "#1a1a2e";
 
     return (
-        <div style={{ minHeight: "100vh", minHeight: "100dvh", background: pageBg, fontFamily: "'Inter',sans-serif", color: textPrimary }}>
+        <div style={{ minHeight: "100dvh", background: pageBg, fontFamily: "'Inter',sans-serif", color: textPrimary }}>
             <style>{STYLES}</style>
             <button className="dash-theme-btn" onClick={toggleTheme} title={isDark ? "Light Mode" : "Dark Mode"} aria-label="Toggle theme">{isDark ? "☀️" : "🌙"}</button>
 

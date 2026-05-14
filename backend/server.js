@@ -1,15 +1,18 @@
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
+const axios = require('axios');
+const FormData = require('form-data');
 const jwt = require('jsonwebtoken');
 const { connectDB, seedDatabase } = require('./db');
 const { Evidence, User, Lawyer, Case, Hearing, CourtOrder, AccessRequest, LawyerRating } = require('./models');
 
 const JWT_SECRET = process.env.JWT_SECRET || 'nyaya-chain-secret-2024';
-const ADMIN_PASSCODE = process.env.VITE_ADMIN_PASSCODE || 'NYAYA2024';
+const ADMIN_PASSCODE = process.env.ADMIN_PASSCODE || 'NYAYA2024';
 const JUDGE_PASSCODE = process.env.JUDGE_PASSCODE || 'JUDGE2024';
 
 connectDB(); // Connect to MongoDB
@@ -51,7 +54,44 @@ function genCaseId() {
     return `LCX-${year}-${seq}`;
 }
 function genBlockchainData() {
-    return { txHash: "0x" + crypto.randomBytes(32).toString('hex'), blockHeight: 19851890 + Math.floor(Math.random() * 200), ipfsCid: "Qm" + crypto.randomBytes(22).toString('base64').replace(/[\/\+]/g, 'x') };
+    return { txHash: "0x" + crypto.randomBytes(32).toString('hex'), blockHeight: 19851890 + Math.floor(Math.random() * 200) };
+}
+
+// ─── Real IPFS Upload via Pinata ──────────────────────────────────────────
+async function uploadFileToIPFS(filePath, fileName, metadata) {
+    const PINATA_JWT = process.env.PINATA_JWT;
+    if (!PINATA_JWT) throw new Error('PINATA_JWT not set in environment');
+
+    const form = new FormData();
+    form.append('file', fs.createReadStream(filePath), { filename: fileName });
+    form.append('pinataMetadata', JSON.stringify({ name: fileName, keyvalues: metadata || {} }));
+    form.append('pinataOptions', JSON.stringify({ cidVersion: 1 }));
+
+    const response = await axios.post(
+        'https://api.pinata.cloud/pinning/pinFileToIPFS',
+        form,
+        {
+            headers: {
+                ...form.getHeaders(),
+                Authorization: `Bearer ${PINATA_JWT}`
+            },
+            maxContentLength: Infinity,
+            maxBodyLength: Infinity
+        }
+    );
+    return response.data.IpfsHash; // real CID
+}
+
+async function uploadJSONToIPFS(jsonData, name) {
+    const PINATA_JWT = process.env.PINATA_JWT;
+    if (!PINATA_JWT) throw new Error('PINATA_JWT not set in environment');
+
+    const response = await axios.post(
+        'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+        { pinataMetadata: { name }, pinataOptions: { cidVersion: 1 }, pinataContent: jsonData },
+        { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${PINATA_JWT}` } }
+    );
+    return response.data.IpfsHash;
 }
 
 // EVIDENCE ROUTES ─────────────────────────────────────────────────────────
@@ -67,17 +107,63 @@ app.get('/api/evidence', async (req, res) => {
 app.post('/api/evidence', upload.single('file'), async (req, res) => {
     try {
         const { name, caseNo, caseId, officer, station, type } = req.body;
-        const rawHash = req.body.hash || crypto.randomBytes(32).toString('hex');
-        const hash = rawHash.startsWith('0x') ? rawHash : '0x' + rawHash;
-        const { txHash, blockHeight, ipfsCid } = genBlockchainData();
         const id = "EV-" + new Date().getFullYear() + "-" + Math.floor(1000 + Math.random() * 9000);
         const timestamp = new Date().toISOString();
+        const { txHash, blockHeight } = genBlockchainData();
+
+        // ── Compute SHA-256 hash of the file (or generate one if no file) ──
+        let rawHash;
+        let ipfsCid;
+        let ipfsUrl;
+
+        if (req.file) {
+            // Hash the actual file bytes
+            const fileBuffer = fs.readFileSync(req.file.path);
+            rawHash = crypto.createHash('sha256').update(fileBuffer).digest('hex');
+
+            // Upload real file to IPFS via Pinata
+            try {
+                ipfsCid = await uploadFileToIPFS(
+                    req.file.path,
+                    req.file.originalname || name,
+                    { evidenceId: id, caseNo: caseNo || '', officer: officer || '', timestamp }
+                );
+                ipfsUrl = `https://gateway.pinata.cloud/ipfs/${ipfsCid}`;
+                console.log(`[IPFS] File uploaded → CID: ${ipfsCid}`);
+            } catch (ipfsErr) {
+                console.error('[IPFS] Upload failed:', ipfsErr.message);
+                // Fallback: store a fake CID so the rest still works
+                ipfsCid = 'IPFS_UPLOAD_FAILED';
+            }
+
+            // Clean up local temp file after upload
+            try { fs.unlinkSync(req.file.path); } catch (_) {}
+
+        } else {
+            // No file attached — pin the evidence metadata as JSON to IPFS
+            rawHash = req.body.hash || crypto.randomBytes(32).toString('hex');
+            try {
+                ipfsCid = await uploadJSONToIPFS(
+                    { id, name, caseNo, officer, station, type, timestamp },
+                    `evidence-${id}`
+                );
+                ipfsUrl = `https://gateway.pinata.cloud/ipfs/${ipfsCid}`;
+                console.log(`[IPFS] JSON pinned → CID: ${ipfsCid}`);
+            } catch (ipfsErr) {
+                console.error('[IPFS] JSON pin failed:', ipfsErr.message);
+                ipfsCid = 'IPFS_UPLOAD_FAILED';
+            }
+        }
+
+        const hash = rawHash.startsWith('0x') ? rawHash : '0x' + rawHash;
 
         const evidence = await Evidence.create({
-            id, name, type: type || 'Document', hash, ipfsCid, uploadedBy: officer,
-            station, caseNo, caseId: caseId || null, timestamp, blockHeight, txHash,
-            status: "verified", courtApproval: "pending",
-            chainOfCustody: [{ officer, action: "Initial Upload & Hash Generated", time: timestamp }]
+            id, name, type: type || 'Document', hash, ipfsCid, ipfsUrl,
+            uploadedBy: officer, station, caseNo, caseId: caseId || null,
+            timestamp, blockHeight, txHash,
+            status: ipfsCid !== 'IPFS_UPLOAD_FAILED' ? 'verified' : 'pending',
+            courtApproval: 'pending',
+            chainOfCustody: [{ officer, action: 'Initial Upload & IPFS Pinned', time: timestamp }]
         });
         res.json(evidence);
     } catch (err) { res.status(500).json({ error: err.message }); }
@@ -212,8 +298,14 @@ app.get('/api/hearings', async (req, res) => {
     try {
         const { caseId, userId } = req.query;
         let query = {};
-        if (caseId) query.caseId = caseId;
-        // userId filtering would need more complex lookup if done via MongoDB solely
+        if (caseId) {
+            query.caseId = caseId;
+        } else if (userId) {
+            // Find all cases filed by this user then get hearings for those cases
+            const userCases = await Case.find({ filedBy: userId }).select('id');
+            const caseIds = userCases.map(c => c.id);
+            query.caseId = { $in: caseIds };
+        }
         const hearings = await Hearing.find(query).sort({ hearingDate: -1 });
         res.json(hearings);
     } catch (err) { res.status(500).json({ error: err.message }); }
@@ -296,8 +388,10 @@ app.post('/api/access-requests', async (req, res) => {
     try {
         const { evidenceId, adminId, targetUserId } = req.body;
         const existing = await AccessRequest.findOne({ evidenceId, adminId, targetUserId, status: 'pending' });
-        if (existing) return res.status(409).json({ error: 'Request already pending' });
-        const request = await AccessRequest.create(req.body);
+        if (existing) return res.status(409).json({ error: 'Request already pending', status: 'pending' });
+        const request = new AccessRequest(req.body);
+        request.id = request._id.toString(); // ensure string id is set
+        await request.save();
         res.json(request);
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -315,7 +409,32 @@ app.get('/api/access-requests', async (req, res) => {
 
 app.patch('/api/access-requests/:id', async (req, res) => {
     try {
-        await AccessRequest.findByIdAndUpdate(req.params.id, { status: req.body.status });
+        // Accept both 'accepted'/'declined' (frontend) and 'approved'/'rejected' (legacy)
+        const status = req.body.status;
+        // Try by string id field first, then fall back to MongoDB _id
+        let updated = await AccessRequest.findOneAndUpdate({ id: req.params.id }, { status }, { new: true });
+        if (!updated) updated = await AccessRequest.findByIdAndUpdate(req.params.id, { status }, { new: true });
+        if (!updated) return res.status(404).json({ error: 'Request not found' });
+        res.json({ success: true });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ACCESS GRANTS — returns list of evidenceIds that an admin has been granted access to
+app.get('/api/access-grants', async (req, res) => {
+    try {
+        const { adminId } = req.query;
+        if (!adminId) return res.json([]);
+        // Granted = access requests sent by this admin that have been accepted (support both status strings)
+        const granted = await AccessRequest.find({ adminId, status: { $in: ['accepted', 'approved'] } }).select('evidenceId');
+        res.json(granted.map(g => g.evidenceId));
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// ASSIGN JUDGE — CourtDashboard can assign itself to a case
+app.post('/api/cases/:id/assign-judge', async (req, res) => {
+    try {
+        const { judgeId, judgeName } = req.body;
+        await Case.findOneAndUpdate({ id: req.params.id }, { assignedJudge: judgeId, assignedJudgeName: judgeName, status: 'under_review' });
         res.json({ success: true });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -332,8 +451,6 @@ app.get('/api/users', async (req, res) => {
 
 // START ────────────────────────────────────────────────────────────────────
 const PORT = process.env.PORT || 3001;
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`));
-}
+app.listen(PORT, () => console.log(`Backend running on http://localhost:${PORT}`));
 
 module.exports = app;
