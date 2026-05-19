@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: lexchain-backend
+    env: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: PINATA_JWT
+        sync: false
+      - key: JWT_SECRET
+        value: "nyaya-chain-secret-2024"
+      - key: ADMIN_PASSCODE
+        value: "NYAYA2024"
+      - key: JUDGE_PASSCODE
+        value: "JUDGE2024"
