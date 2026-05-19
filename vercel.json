@@ -12,21 +12,18 @@
       "use": "@vercel/node"
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "backend/server.js"
+      "source": "/api/(.*)",
+      "destination": "/backend/server.js"
     },
     {
-      "src": "/uploads/(.*)",
-      "dest": "backend/uploads/$1"
+      "source": "/uploads/(.*)",
+      "destination": "/backend/uploads/$1"
     },
     {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ]
 }
