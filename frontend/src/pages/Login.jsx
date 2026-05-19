@@ -152,6 +152,7 @@ export default function Login() {
         if (!ok) return;
         setLoading(true);
         try {
+            try {
                 const message = `Sign in to LexChain\nRole: ${role}\nAddress: ${address}\nTimestamp: ${Date.now()}`;
                 const signature = await signMessageAsync({ message });
                 const body = { address, signature, message, role, isRegister: false, ...fields };
