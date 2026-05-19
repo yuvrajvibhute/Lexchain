@@ -143,6 +143,9 @@ app.post('/api/evidence', upload.single('file'), async (req, res) => {
         const timestamp = new Date().toISOString();
         const { txHash, blockHeight } = genBlockchainData();
 
+        const gatewayToken = process.env.PINATA_GATEWAY_TOKEN;
+        const gatewaySuffix = gatewayToken ? `?pinataGatewayToken=${gatewayToken}` : '';
+
         // ── Compute SHA-256 hash of the file (or generate one if no file) ──
         let rawHash;
         let ipfsCid;
@@ -160,7 +163,7 @@ app.post('/api/evidence', upload.single('file'), async (req, res) => {
                     req.file.originalname || name,
                     { evidenceId: id, caseNo: caseNo || '', officer: officer || '', timestamp }
                 );
-                ipfsUrl = `https://gateway.pinata.cloud/ipfs/${ipfsCid}`;
+                ipfsUrl = `https://gateway.pinata.cloud/ipfs/${ipfsCid}${gatewaySuffix}`;
                 console.log(`[IPFS] File uploaded → CID: ${ipfsCid}`);
             } catch (ipfsErr) {
                 console.error('[IPFS] Upload failed:', ipfsErr.message);
@@ -179,7 +182,7 @@ app.post('/api/evidence', upload.single('file'), async (req, res) => {
                     { id, name, caseNo, officer, station, type, timestamp },
                     `evidence-${id}`
                 );
-                ipfsUrl = `https://gateway.pinata.cloud/ipfs/${ipfsCid}`;
+                ipfsUrl = `https://gateway.pinata.cloud/ipfs/${ipfsCid}${gatewaySuffix}`;
                 console.log(`[IPFS] JSON pinned → CID: ${ipfsCid}`);
             } catch (ipfsErr) {
                 console.error('[IPFS] JSON pin failed:', ipfsErr.message);
