@@ -208,11 +208,12 @@ export default function UserDashboard() {
         try {
             const r = await fetch(`${API}/api/evidence`, { method: "POST", body: fd });
             const d = await r.json();
+            if (!r.ok) throw new Error(d.error || "Upload failed");
             setUploadDone(d);
             setUploadForm({ name: "", type: "FIR", caseNo: "", caseId: "" });
             setUploadFile(null);
             fetchEvidence();
-        } catch { alert("Upload failed"); }
+        } catch (e) { alert("Upload failed: " + (e.message || "Unknown error. Check if backend is running.")); }
         finally { setUploading(false); }
     }
 

@@ -28,9 +28,24 @@ try {
 }
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: true, // reflect the request origin — allows any domain
+    credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+app.options('*', cors()); // handle preflight for all routes
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
+// Health check — lets you confirm the backend is alive on Vercel
+app.get('/api/health', (req, res) => {
+    res.json({ status: 'ok', timestamp: new Date().toISOString(), env: {
+        mongo: !!process.env.MONGODB_URI,
+        pinata: !!process.env.PINATA_JWT,
+        jwt: !!process.env.JWT_SECRET
+    }});
+});
 
 // Seed mock data ──────────────────────────────────────────────────────────
 const MOCK_EVIDENCE = [
