@@ -152,20 +152,26 @@ export default function Login() {
         if (!ok) return;
         setLoading(true);
         try {
-            try {
                 const message = `Sign in to LexChain\nRole: ${role}\nAddress: ${address}\nTimestamp: ${Date.now()}`;
                 const signature = await signMessageAsync({ message });
-                const body = { address, signature, message, role, ...fields };
+                const body = { address, signature, message, role, isRegister: false, ...fields };
                 const res = await fetch(`${API}/api/auth/wallet`, {
                     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
                 });
-                if (res.ok) {
-                    const data = await res.json();
-                    handleAuthLogin({ ...data.user, token: data.token });
-                    navigate(roleRedirect(data.user.role));
-                    return;
+                if (!res.ok) {
+                    const errData = await res.json();
+                    throw new Error(errData.error || "Login failed");
                 }
-            } catch (_) { /* fall back to local */ }
+                const data = await res.json();
+                handleAuthLogin({ ...data.user, token: data.token });
+                navigate(roleRedirect(data.user.role));
+                return;
+            } catch (apiErr) {
+                if (apiErr.message !== "Failed to fetch") {
+                    throw apiErr; // Rethrow real backend errors (e.g. role mismatch, user not found)
+                }
+                /* fall back to local mock login only if backend is completely offline/network down */
+            }
             const userData = { address, role, name: fields.name || "User", ...fields };
             handleAuthLogin(userData);
             navigate(roleRedirect(role));

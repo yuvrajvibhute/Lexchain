@@ -178,17 +178,24 @@ export default function Register() {
             try {
                 const message = `Register with LexChain\nRole: ${role}\nAddress: ${address}\nTimestamp: ${Date.now()}`;
                 const signature = await signMessageAsync({ message });
-                const body = { address, signature, message, role, ...fields };
+                const body = { address, signature, message, role, isRegister: true, ...fields };
                 const res = await fetch(`${API}/api/auth/wallet`, {
                     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
                 });
-                if (res.ok) {
-                    const data = await res.json();
-                    handleAuthLogin({ ...data.user, token: data.token });
-                    navigate(roleRedirect(data.user.role));
-                    return;
+                if (!res.ok) {
+                    const errData = await res.json();
+                    throw new Error(errData.error || "Registration failed");
                 }
-            } catch (_) { /* fall back */ }
+                const data = await res.json();
+                handleAuthLogin({ ...data.user, token: data.token });
+                navigate(roleRedirect(data.user.role));
+                return;
+            } catch (apiErr) {
+                if (apiErr.message !== "Failed to fetch") {
+                    throw apiErr; // Rethrow real backend errors (e.g. user already exists, invalid passcode)
+                }
+                /* fall back to local mock login only if backend is completely offline/network down */
+            }
             const userData = { address, role, name: fields.name || "User", ...fields, registeredAt: Date.now() };
             handleAuthLogin(userData);
             setSuccess("✅ Registration successful!");

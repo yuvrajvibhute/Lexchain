@@ -287,28 +287,49 @@ app.post('/api/auth/email', async (req, res) => {
 app.post('/api/auth/wallet', async (req, res) => {
     try {
         const { address, signature, message, role, name, email, city, post, phone, aadhaar, fullAddress, 
-                 barCouncilId, licenseNo, specialization, experience, fee, courtName, passcode } = req.body;
+                 barCouncilId, licenseNo, specialization, experience, fee, courtName, passcode, isRegister } = req.body;
         if (!address || !signature || !message) return res.status(400).json({ error: 'Missing wallet fields' });
-        if (role === 'admin' && passcode !== ADMIN_PASSCODE) return res.status(401).json({ error: 'Invalid admin passcode' });
-        if (role === 'judge' && passcode !== JUDGE_PASSCODE) return res.status(401).json({ error: 'Invalid judge passcode' });
+        
+        // Find existing user
+        const existingUser = await User.findOne({ id: address });
 
-        const user = await User.findOneAndUpdate(
-            { id: address },
-            { id: address, address, name, email, role: role || 'user', loginMethod: 'wallet', city, post, phone, aadhaar, fullAddress },
-            { upsert: true, new: true }
-        );
+        if (isRegister) {
+            // REGISTRATION FLOW
+            if (existingUser) {
+                return res.status(400).json({ error: 'Wallet address is already registered. Please Login instead.' });
+            }
+            if (role === 'admin' && passcode !== ADMIN_PASSCODE) return res.status(401).json({ error: 'Invalid admin passcode' });
+            if (role === 'judge' && passcode !== JUDGE_PASSCODE) return res.status(401).json({ error: 'Invalid judge passcode' });
 
-        if (role === 'lawyer') {
-            await Lawyer.findOneAndUpdate(
-                { id: address },
-                { id: address, userId: address, name, email, barCouncilId: barCouncilId || '', licenseNo: licenseNo || '', 
-                  specialization: specialization || 'General', experience: experience || 0, fee: fee || 0, city: city || '', 
-                  courtName: courtName || '', verified: false },
-                { upsert: true }
-            );
+            const user = await User.create({
+                id: address, address, name, email, role: role || 'user', loginMethod: 'wallet', city, post, phone, aadhaar, fullAddress
+            });
+
+            if (role === 'lawyer') {
+                await Lawyer.create({
+                    id: address, userId: address, name, email, barCouncilId: barCouncilId || '', licenseNo: licenseNo || '', 
+                    specialization: specialization || 'General', experience: experience || 0, fee: fee || 0, city: city || '', 
+                    courtName: courtName || '', verified: false
+                });
+            }
+
+            const token = jwt.sign(user.toJSON(), JWT_SECRET, { expiresIn: '7d' });
+            return res.json({ user, token });
+
+        } else {
+            // LOGIN FLOW
+            if (!existingUser) {
+                return res.status(404).json({ error: 'Account not registered with this wallet. Please Register first.' });
+            }
+            if (existingUser.role !== role) {
+                return res.status(403).json({ error: `Access denied. This wallet is registered as a ${existingUser.role.toUpperCase()}, not as a ${role.toUpperCase()}.` });
+            }
+            if (role === 'admin' && passcode !== ADMIN_PASSCODE) return res.status(401).json({ error: 'Invalid admin passcode' });
+            if (role === 'judge' && passcode !== JUDGE_PASSCODE) return res.status(401).json({ error: 'Invalid judge passcode' });
+
+            const token = jwt.sign(existingUser.toJSON(), JWT_SECRET, { expiresIn: '7d' });
+            return res.json({ user: existingUser, token });
         }
-        const token = jwt.sign(user.toJSON(), JWT_SECRET, { expiresIn: '7d' });
-        res.json({ user, token });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
