@@ -6,7 +6,7 @@ import { usePrivySafe } from "../context/PrivyContext";
 import { verifyPassword, hasPassword } from "../utils/passwordUtils";
 import { useTheme } from "../context/ThemeContext";
 
-const API = import.meta.env.VITE_API_URL || "/api";
+const API = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3001' : '');
 const ADMIN_PASSCODE = import.meta.env.VITE_ADMIN_PASSCODE || "NYAYA2024";
 const JUDGE_PASSCODE = "JUDGE2024";
 

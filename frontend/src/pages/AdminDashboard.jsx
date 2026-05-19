@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 
-const API = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:3001' : '');
 const typeColors = { FIR: "#ef4444", CCTV: "#3b82f6", Forensic: "#22c55e", Document: "#f59e0b" };
 const statusColors = { verified: "#22c55e", pending: "#f59e0b", disputed: "#ef4444" };
 function shortHash(h) { return h ? h.slice(0, 10) + "..." + h.slice(-6) : "—"; }

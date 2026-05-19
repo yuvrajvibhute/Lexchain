@@ -17,8 +17,14 @@ const JUDGE_PASSCODE = process.env.JUDGE_PASSCODE || 'JUDGE2024';
 
 connectDB(); // Connect to MongoDB
 
-if (!fs.existsSync(path.join(__dirname, 'uploads'))) {
-    fs.mkdirSync(path.join(__dirname, 'uploads'));
+const os = require('os');
+const uploadDir = process.env.VERCEL ? os.tmpdir() : path.join(__dirname, 'uploads');
+try {
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    }
+} catch (e) {
+    console.warn("Could not create uploads directory (likely read-only filesystem):", e.message);
 }
 
 const app = express();
@@ -45,7 +51,7 @@ async function seedApp() {
 }
 seedApp();
 
-const upload = multer({ dest: 'uploads/' });
+const upload = multer({ dest: uploadDir });
 
 // Helpers ─────────────────────────────────────────────────────────────────
 function genCaseId() {
