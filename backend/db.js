@@ -44,6 +44,9 @@ const startInMemory = async () => {
 const connectDB = async () => {
     try {
         if (!MONGODB_URI) {
+            if (process.env.VERCEL) {
+                throw new Error("MONGODB_URI is required on Vercel. MongoMemoryServer cannot run in serverless environments.");
+            }
             console.log('No MONGODB_URI found. Starting locally embedded MongoDB Memory Server...');
             const mongoServer = await startInMemory();
             MONGODB_URI = mongoServer.getUri();
@@ -53,6 +56,9 @@ const connectDB = async () => {
                 await mongoose.connect(MONGODB_URI, { serverSelectionTimeoutMS: 8000 });
             } catch (atlasErr) {
                 console.warn('⚠ MongoDB Atlas connection failed:', atlasErr.message);
+                if (process.env.VERCEL) {
+                    throw new Error("Failed to connect to MongoDB Atlas on Vercel. Ensure your MONGODB_URI is correct and IP access is configured.");
+                }
                 console.log('Falling back to in-memory MongoDB for demo...');
                 const mongoServer = await startInMemory();
                 MONGODB_URI = mongoServer.getUri();
