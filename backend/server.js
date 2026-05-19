@@ -37,13 +37,47 @@ app.use(cors({
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Health check — lets you confirm the backend is alive on Vercel
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', timestamp: new Date().toISOString(), env: {
-        mongo: !!process.env.MONGODB_URI,
-        pinata: !!process.env.PINATA_JWT,
-        jwt: !!process.env.JWT_SECRET
-    }});
+// Health check — lets you confirm the backend is alive and correctly connected to Atlas and Pinata
+app.get('/api/health', async (req, res) => {
+    let dbStatus = "Disconnected";
+    let dbType = "Unknown";
+    try {
+        const state = mongoose.connection.readyState;
+        if (state === 1) {
+            dbStatus = "Connected";
+            dbType = mongoose.connection.host.includes("mongodb.net") ? "MongoDB Atlas (Cloud)" : "Local/Memory Database";
+        } else {
+            dbStatus = ["Disconnected", "Connecting", "Disconnecting"][state] || "Unknown";
+        }
+    } catch (e) {
+        dbStatus = "Error: " + e.message;
+    }
+
+    let pinataStatus = "Unknown";
+    try {
+        const testRes = await axios.get('https://api.pinata.cloud/data/testAuthentication', {
+            headers: getPinataHeaders()
+        });
+        if (testRes.status === 200) pinataStatus = "Connected (Valid Keys)";
+    } catch (e) {
+        pinataStatus = "Failed: " + (e.response?.data?.error || e.message);
+    }
+
+    res.json({
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        database: {
+            status: dbStatus,
+            type: dbType,
+            uri_configured: !!process.env.MONGODB_URI
+        },
+        pinata: {
+            status: pinataStatus,
+            jwt_configured: !!process.env.PINATA_JWT,
+            api_key_configured: !!process.env.PINATA_API_KEY,
+            secret_key_configured: !!process.env.PINATA_SECRET_API_KEY
+        }
+    });
 });
 
 // Seed mock data ──────────────────────────────────────────────────────────
