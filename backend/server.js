@@ -78,10 +78,28 @@ function genBlockchainData() {
 }
 
 // ─── Real IPFS Upload via Pinata ──────────────────────────────────────────
-async function uploadFileToIPFS(filePath, fileName, metadata) {
-    const PINATA_JWT = process.env.PINATA_JWT;
-    if (!PINATA_JWT) throw new Error('PINATA_JWT not set in environment');
+function getPinataHeaders(customHeaders = {}) {
+    const JWT = process.env.PINATA_JWT;
+    const API_KEY = process.env.PINATA_API_KEY;
+    const SECRET_KEY = process.env.PINATA_SECRET_API_KEY;
 
+    if (JWT) {
+        return {
+            ...customHeaders,
+            Authorization: `Bearer ${JWT}`
+        };
+    } else if (API_KEY && SECRET_KEY) {
+        return {
+            ...customHeaders,
+            pinata_api_key: API_KEY,
+            pinata_secret_api_key: SECRET_KEY
+        };
+    } else {
+        throw new Error('Pinata Authentication missing. Please set PINATA_JWT or both PINATA_API_KEY and PINATA_SECRET_API_KEY in your env variables.');
+    }
+}
+
+async function uploadFileToIPFS(filePath, fileName, metadata) {
     const form = new FormData();
     form.append('file', fs.createReadStream(filePath), { filename: fileName });
     form.append('pinataMetadata', JSON.stringify({ name: fileName, keyvalues: metadata || {} }));
@@ -91,10 +109,7 @@ async function uploadFileToIPFS(filePath, fileName, metadata) {
         'https://api.pinata.cloud/pinning/pinFileToIPFS',
         form,
         {
-            headers: {
-                ...form.getHeaders(),
-                Authorization: `Bearer ${PINATA_JWT}`
-            },
+            headers: getPinataHeaders(form.getHeaders()),
             maxContentLength: Infinity,
             maxBodyLength: Infinity
         }
@@ -103,13 +118,10 @@ async function uploadFileToIPFS(filePath, fileName, metadata) {
 }
 
 async function uploadJSONToIPFS(jsonData, name) {
-    const PINATA_JWT = process.env.PINATA_JWT;
-    if (!PINATA_JWT) throw new Error('PINATA_JWT not set in environment');
-
     const response = await axios.post(
         'https://api.pinata.cloud/pinning/pinJSONToIPFS',
         { pinataMetadata: { name }, pinataOptions: { cidVersion: 1 }, pinataContent: jsonData },
-        { headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${PINATA_JWT}` } }
+        { headers: getPinataHeaders({ 'Content-Type': 'application/json' }) }
     );
     return response.data.IpfsHash;
 }
