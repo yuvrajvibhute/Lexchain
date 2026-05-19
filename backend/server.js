@@ -8,6 +8,7 @@ const path = require('path');
 const axios = require('axios');
 const FormData = require('form-data');
 const jwt = require('jsonwebtoken');
+const mongoose = require('mongoose');
 const { connectDB, seedDatabase } = require('./db');
 const { Evidence, User, Lawyer, Case, Hearing, CourtOrder, AccessRequest, LawyerRating } = require('./models');
 
