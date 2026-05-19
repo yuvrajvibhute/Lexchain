@@ -84,7 +84,7 @@ createRoot(document.getElementById("root")).render(
           externalWallets: {
             coinbaseWallet: { connectionOptions: "all" },
           },
-          loginMethods: ["wallet"],
+          loginMethods: ["wallet", "email"],
         }}
       >
         <QueryClientProvider client={queryClient}>
