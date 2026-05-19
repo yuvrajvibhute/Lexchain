@@ -8,9 +8,9 @@
 [![Vite](https://img.shields.io/badge/Vite-7-646cff?style=flat-square&logo=vite)](https://vitejs.dev)
 [![Node.js](https://img.shields.io/badge/Node.js-Express-339933?style=flat-square&logo=node.js)](https://nodejs.org)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?style=flat-square&logo=mongodb)](https://www.mongodb.com)
-[![Privy](https://img.shields.io/badge/Privy-Wallet%20Auth-7c3aed?style=flat-square)](https://privy.io)
+[![Privy](https://img.shields.io/badge/Privy-Wallet%20%26%20Email%20Auth-7c3aed?style=flat-square)](https://privy.io)
 [![Wagmi](https://img.shields.io/badge/Wagmi-v2-blue?style=flat-square)](https://wagmi.sh)
-[![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=flat-square&logo=vercel)](https://vercel.com)
+[![Local-First](https://img.shields.io/badge/Platform-Local%20First%20%2F%20Offline%20Safe-blueviolet?style=flat-square)](#-running-locally)
 [![License](https://img.shields.io/badge/License-ISC-green?style=flat-square)](LICENSE)
 
 **A decentralized, tamper-proof legal evidence management system built on blockchain technology.**
@@ -58,17 +58,19 @@ Every piece of evidence submitted generates a **cryptographic SHA-256 hash**, a 
 ## ✨ Key Features
 
 ### 🔐 Authentication & Security
-- **Wallet-only login** via [Privy](https://privy.io) with support for MetaMask, Coinbase Wallet, and WalletConnect
+- **Multi-Method Login** via [Privy](https://privy.io) supporting **Web3 Wallets** (MetaMask, Coinbase, WalletConnect) and **Web2 Email OTP** (One-Time Passcode)
+- **Automatic Embedded Wallet Provisioning**: Email-login users automatically receive a secure, fully-featured cryptographic Ethereum wallet in the background
+- **Strict Role-Guard Verification**: Real-time server-side checking guarantees that connected wallets/emails strictly match their registered role on the selected login tab (e.g. users cannot log in via the Judge dashboard using a Citizen wallet)
 - Role-based access control with passcodes for privileged roles (Admin, Judge)
-- JWT token-based session management (7-day expiry)
+- JWT token-based session management
 - Secure admin passcode: `NYAYA2024` | Judge passcode: `JUDGE2024`
 
 ### 📂 Evidence Management
-- Upload documents/files with automatic hash generation (SHA-256)
+- **Pinata IPFS Storage**: Uploaded files are uploaded to real, permanent, decentralized IPFS storage using custom Pinata integrations
+- Automatic cryptographic SHA-256 file hashing
 - Immutable chain-of-custody tracking per evidence item
 - Court approval workflow (pending → approved/rejected)
 - Evidence verification by ID, hash, or transaction hash
-- Filter evidence by Case ID
 
 ### ⚖️ Case Management
 - File new cases with full incident details
@@ -136,9 +138,9 @@ Every piece of evidence submitted generates a **cryptographic SHA-256 hash**, a 
 ### Infrastructure
 | Service | Purpose |
 |---------|---------|
-| **Vercel** | Full-stack deployment (frontend static + backend serverless) |
-| **MongoDB Atlas** *(optional)* | Production database |
-| **IPFS** *(simulated)* | Decentralized file storage reference |
+| **Local Host** | Fully-optimized for offline/local run without cloud server reliance |
+| **MongoDB Memory Server** | Seamless local database fallback that triggers automatically if MongoDB Atlas is disconnected, ensuring 100% stable presentation demos |
+| **Pinata IPFS** | Real, decentralized document storage on the IPFS network |
 
 ---
 
@@ -305,14 +307,23 @@ VITE_API_URL=http://localhost:3001
 
 ### Running Locally
 
-#### Option A — Run Everything at Once (Recommended)
+#### Option A — One-Click Automated Launcher (Highly Recommended)
+For the most premium presentation experience, we have included a **one-click startup launcher** at the root of the project:
+1. Double-click the **`START_DEMO.bat`** file.
+2. The launcher will automatically:
+   - Terminate any stale processes on port `3001` or `5173` to prevent port-in-use conflicts.
+   - Start the backend server on `http://localhost:3001`.
+   - Start the frontend developer server on `http://localhost:5173`.
+   - Automatically open the platform in your default web browser!
+
+#### Option B — Run Manually with Concurrently
 ```bash
 # From the project root
 npm run dev
 ```
-This uses `concurrently` to start both the backend and frontend simultaneously.
+This starts both the backend and frontend simultaneously in your terminal.
 
-#### Option B — Run Separately
+#### Option C — Run Individually
 
 **Backend only:**
 ```bash
@@ -330,13 +341,13 @@ npm run dev
 
 ---
 
-**Access the app:**
+**Access details:**
 
 | Service | URL |
 |---------|-----|
-| Frontend | http://localhost:5173 |
+| Frontend UI | http://localhost:5173 |
 | Backend API | http://localhost:3001 |
-| API Health | http://localhost:3001/api/evidence |
+| API Evidence Health | http://localhost:3001/api/evidence |
 
 ---
 
@@ -652,76 +663,33 @@ LexChain uses **7 MongoDB collections** managed via Mongoose:
 
 ---
 
-## 🔑 Wallet Authentication
+## 🔑 Wallet & Email Authentication
 
-LexChain uses **[Privy](https://privy.io)** for wallet-based authentication. The login flow is:
+LexChain uses **[Privy](https://privy.io)** for multi-modal, secure authentication:
 
-1. User clicks "Connect Wallet" on the Login/Register page
-2. Privy opens a modal with supported wallet options (MetaMask, Coinbase Wallet, WalletConnect)
-3. User connects their wallet and signs a message to prove ownership
-4. The wallet `address`, `signature`, and `message` are sent to `/api/auth/wallet`
-5. The backend verifies the request and upserts the user in MongoDB
-6. A JWT token is returned and stored in `localStorage` under the key `nyaya_user`
-7. The `AuthContext` reads this token on load to restore the session
+1. **Web3 Wallets**: Connect with MetaMask, Coinbase Wallet, or WalletConnect. The frontend performs standard message signing to prove wallet ownership.
+2. **Web2 Email OTP**: Type your email address to receive an instant verification OTP.
+3. **Embedded Wallet**: Upon successful email validation, Privy automatically generates a secure, fully-functioning cryptographic Ethereum wallet in the background for the user, requiring zero MetaMask setup!
+4. **Strict Authentication Guarding**: When registering or logging in, the backend strictly verifies that the authenticated user profile matches the selected dashboard tab role, making it impossible to switch or bypass dashboards unauthorized.
 
-**Supported EVM chains configured:**
+**Privy Configured Networks:**
 - Ethereum Mainnet
 - Polygon
 - Optimism
 
-**Privy App ID:** Configure in `frontend/.env` as `VITE_PRIVY_APP_ID`.
-
 ---
 
-## 🚢 Deployment
+## 🏛️ Local-First / Offline-Safe Design
 
-LexChain is configured for **zero-config deployment on Vercel** via `vercel.json`.
+To guarantee 100% stability and zero dependency on remote servers during live demonstrations or offline reviews, LexChain is designed with a **highly robust local-first architecture**:
 
-### Vercel Configuration (`vercel.json`)
+### 🔌 Intelligent Database Fallback
+- The backend checks for the cloud **MongoDB Atlas URI** in the environment configurations.
+- If Atlas is offline, inaccessible, or network-blocked, the backend **instantly and seamlessly boots an in-memory MongoDB server instance locally**.
+- It then automatically seeds all the required demo cases and lawyer directories, meaning **the entire system remains fully operational even if you completely lose internet connection!**
 
-```json
-{
-  "version": 2,
-  "builds": [
-    { "src": "frontend/package.json", "use": "@vercel/static-build", "config": { "distDir": "dist" } },
-    { "src": "backend/server.js", "use": "@vercel/node" }
-  ],
-  "routes": [
-    { "src": "/api/(.*)", "dest": "backend/server.js" },
-    { "src": "/uploads/(.*)", "dest": "backend/uploads/$1" },
-    { "handle": "filesystem" },
-    { "src": "/(.*)", "dest": "frontend/index.html" }
-  ]
-}
-```
-
-### Deploy Steps
-
-**1. Push to GitHub:**
-```bash
-git add .
-git commit -m "chore: ready for deployment"
-git push origin main
-```
-
-**2. Connect to Vercel:**
-- Go to [vercel.com/new](https://vercel.com/new)
-- Import your GitHub repository
-- Vercel auto-detects the `vercel.json` configuration
-
-**3. Add Environment Variables in Vercel Dashboard:**
-
-| Variable | Value |
-|----------|-------|
-| `MONGODB_URI` | Your MongoDB Atlas URI |
-| `JWT_SECRET` | A strong random secret |
-| `VITE_ADMIN_PASSCODE` | `NYAYA2024` (or custom) |
-| `JUDGE_PASSCODE` | `JUDGE2024` (or custom) |
-| `VITE_PRIVY_APP_ID` | Your Privy App ID |
-
-**4. Deploy!** Vercel will build the frontend and deploy the backend as serverless functions.
-
-> ⚠️ **Important for Production:** Without `MONGODB_URI`, the backend uses an in-memory database. Data will be lost between serverless function cold starts. Always set `MONGODB_URI` for production.
+### 📁 Real IPFS Storage
+- Documents and files uploaded by police/admins are transferred directly to the decentralized IPFS network using high-speed custom **Pinata gateway endpoints** to secure permanent evidence hashes.
 
 ---
 
