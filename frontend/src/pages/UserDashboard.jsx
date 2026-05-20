@@ -119,24 +119,26 @@ export default function UserDashboard() {
     const [respondingId, setRespondingId] = useState(null);
     const pendingCount = myRequests.filter(r => r.status === "pending").length;
 
+    const userId = user?.id || user?.address;
+
     const fetchMyCases = useCallback(async () => {
-        if (!user?.id) return;
+        if (!userId) return;
         setCasesLoading(true);
         try {
-            const r = await fetch(`${API}/api/cases?role=user&userId=${encodeURIComponent(user.id)}`);
+            const r = await fetch(`${API}/api/cases?role=user&userId=${encodeURIComponent(userId)}`);
             const data = await r.json();
             setMyCases(data);
         } catch { setMyCases([]); }
         finally { setCasesLoading(false); }
-    }, [user?.id]);
+    }, [userId]);
 
     const fetchHearings = useCallback(async () => {
-        if (!user?.id) return;
+        if (!userId) return;
         try {
-            const r = await fetch(`${API}/api/hearings?userId=${encodeURIComponent(user.id)}`);
+            const r = await fetch(`${API}/api/hearings?userId=${encodeURIComponent(userId)}`);
             setMyHearings(await r.json());
         } catch { setMyHearings([]); }
-    }, [user?.id]);
+    }, [userId]);
 
     const fetchLawyers = useCallback(async () => {
         setLawyersLoading(true);
@@ -152,12 +154,12 @@ export default function UserDashboard() {
     }, [filterSpec, filterMaxFee, filterMinExp]);
 
     const fetchMyRequests = useCallback(async () => {
-        if (!user?.id) return;
+        if (!userId) return;
         setReqLoading(true);
-        try { const r = await fetch(`${API}/api/access-requests?userId=${encodeURIComponent(user.id)}`); setMyRequests(await r.json()); }
+        try { const r = await fetch(`${API}/api/access-requests?userId=${encodeURIComponent(userId)}`); setMyRequests(await r.json()); }
         catch { setMyRequests([]); }
         finally { setReqLoading(false); }
-    }, [user?.id]);
+    }, [userId]);
 
     const fetchEvidence = useCallback(async () => {
         setEvLoading(true);
@@ -181,7 +183,7 @@ export default function UserDashboard() {
         try {
             const r = await fetch(`${API}/api/cases`, {
                 method: "POST", headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ ...caseForm, filedBy: user?.id, filedByName: user?.name || user?.email })
+                body: JSON.stringify({ ...caseForm, filedBy: userId, filedByName: user?.name || user?.email })
             });
             const d = await r.json();
             if (!r.ok) throw new Error(d.error);
@@ -385,7 +387,7 @@ export default function UserDashboard() {
 
                                 {/* Court Orders */}
                                 {(selectedCase.courtOrders || []).length > 0 && (
-                                    <div className="card">
+                                    <div className="card" style={{ marginBottom: 16 }}>
                                         <div style={{ fontSize: 11, color: "#475569", letterSpacing: ".1em", marginBottom: 14 }}>📜 COURT ORDERS</div>
                                         {selectedCase.courtOrders.map(o => (
                                             <div key={o.id} style={{ padding: 14, background: "rgba(5,7,13,.6)", borderRadius: 10, marginBottom: 10 }}>
@@ -395,6 +397,33 @@ export default function UserDashboard() {
                                                 </div>
                                                 <p style={{ fontSize: 13, color: "#94a3b8", lineHeight: 1.8 }}>{o.orderText}</p>
                                                 <div style={{ fontSize: 10, color: "#334155", marginTop: 8, fontFamily: "monospace" }}>Hash: {o.hash}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Uploaded Evidence */}
+                                {(selectedCase.evidence || []).length > 0 && (
+                                    <div className="card">
+                                        <div style={{ fontSize: 11, color: "#475569", letterSpacing: ".1em", marginBottom: 14 }}>⬆ UPLOADED EVIDENCE</div>
+                                        {selectedCase.evidence.map(ev => (
+                                            <div key={ev.id} style={{ padding: 14, background: "rgba(59,130,246,.04)", border: "1px solid rgba(59,130,246,.1)", borderRadius: 10, marginBottom: 10 }}>
+                                                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 8 }}>
+                                                    <div>
+                                                        <div style={{ fontWeight: 700, fontSize: 13, color: "#e2e8f0", marginBottom: 3 }}>📄 {ev.name}</div>
+                                                        <div style={{ fontSize: 11, color: "#475569", fontFamily: "monospace" }}>
+                                                            <span style={{ color: "#60a5fa" }}>{ev.id}</span> · {new Date(ev.timestamp).toLocaleDateString()}
+                                                        </div>
+                                                    </div>
+                                                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                                                        <span style={{ fontSize: 11, padding: "2px 10px", background: "rgba(100,116,139,.1)", color: "#94a3b8", borderRadius: 20, fontWeight: 700 }}>{ev.type}</span>
+                                                        {ev.ipfsUrl && ev.ipfsCid !== 'IPFS_UPLOAD_FAILED' && (
+                                                            <a href={ev.ipfsUrl} target="_blank" rel="noopener noreferrer" title={`IPFS CID: ${ev.ipfsCid}`} style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "3px 10px", background: "rgba(13,148,136,.15)", border: "1px solid rgba(13,148,136,.35)", borderRadius: 20, color: "#2dd4bf", fontSize: 11, fontWeight: 700, textDecoration: "none" }}>
+                                                                🌐 IPFS
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>

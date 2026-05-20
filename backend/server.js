@@ -16,8 +16,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'nyaya-chain-secret-2024';
 const ADMIN_PASSCODE = process.env.ADMIN_PASSCODE || 'NYAYA2024';
 const JUDGE_PASSCODE = process.env.JUDGE_PASSCODE || 'JUDGE2024';
 
-connectDB(); // Connect to MongoDB
-
+// Database connection is initialized further down before seeding
 const os = require('os');
 const uploadDir = process.env.VERCEL ? os.tmpdir() : path.join(__dirname, 'uploads');
 try {
@@ -98,7 +97,9 @@ async function seedApp() {
         await Lawyer.insertMany(lawyers);
     }
 }
-seedApp();
+connectDB().then(() => {
+    seedApp();
+});
 
 const upload = multer({ dest: uploadDir });
 
