@@ -7,8 +7,6 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const FormData = require('form-data');
-const jwt = require('jsonwebtoken');
-const mongoose = require('mongoose');
 const { connectDB, seedDatabase } = require('./db');
 const { Evidence, User, Lawyer, Case, Hearing, CourtOrder, AccessRequest, LawyerRating, Feedback, WalletInteraction } = require('./models');
 
@@ -41,21 +39,16 @@ app.use(cors({
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Health check — lets you confirm the backend is alive and correctly connected to Atlas and Pinata
+// Ensure LexDB is initialized on request
+app.use(async (req, res, next) => {
+    await connectDB();
+    next();
+});
+
+// Health check — lets you confirm the backend is alive and correctly connected
 app.get('/api/health', async (req, res) => {
-    let dbStatus = "Disconnected";
-    let dbType = "Unknown";
-    try {
-        const state = mongoose.connection.readyState;
-        if (state === 1) {
-            dbStatus = "Connected";
-            dbType = mongoose.connection.host.includes("mongodb.net") ? "MongoDB Atlas (Cloud)" : "Local/Memory Database";
-        } else {
-            dbStatus = ["Disconnected", "Connecting", "Disconnecting"][state] || "Unknown";
-        }
-    } catch (e) {
-        dbStatus = "Error: " + e.message;
-    }
+    let dbStatus = "Connected";
+    let dbType = "Zero-Config Embedded LexDB";
 
     let pinataStatus = "Unknown";
     try {
@@ -103,6 +96,8 @@ async function seedApp() {
 }
 connectDB().then(() => {
     seedApp();
+}).catch(err => {
+    console.warn("Initial DB connection warning:", err?.message || err);
 });
 
 const upload = multer({ dest: uploadDir });

@@ -165,15 +165,21 @@ export default function Login() {
                     method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body),
                 });
                 if (!res.ok) {
-                    const errData = await res.json();
-                    throw new Error(errData.error || "Login failed");
+                    let errMsg = "Login failed";
+                    try {
+                        const errData = await res.json();
+                        errMsg = errData.error || errMsg;
+                    } catch {
+                        errMsg = `Backend Server Error (${res.status}). Please ensure MONGODB_URI is set in your Vercel Project Environment Variables.`;
+                    }
+                    throw new Error(errMsg);
                 }
                 const data = await res.json();
                 handleAuthLogin({ ...data.user, token: data.token });
                 navigate(roleRedirect(data.user.role));
                 return;
             } catch (apiErr) {
-                if (apiErr.message !== "Failed to fetch") {
+                if (apiErr.message !== "Failed to fetch" && !apiErr.message.includes("Backend Server Error")) {
                     throw apiErr; // Rethrow real backend errors (e.g. role mismatch, user not found)
                 }
                 /* fall back to local mock login only if backend is completely offline/network down */

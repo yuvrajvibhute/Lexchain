@@ -1,0 +1,79 @@
+{
+  "Evidence": [
+    {
+      "id": "EV-2024-001",
+      "name": "FIR_Case_2024_Bangalore.pdf",
+      "type": "FIR",
+      "hash": "0x7f3a9c2e1b84d6f05a",
+      "ipfsCid": "QmX9bK2nR7sP4tA3mE6d",
+      "uploadedBy": "SI Rajesh Kumar",
+      "station": "Koramangala PS",
+      "caseNo": "CR-2024-1847",
+      "timestamp": "2024-03-15T09:23:11",
+      "blockHeight": 19847562,
+      "txHash": "0x4a9f2c1b7e3d5a8c0b",
+      "status": "verified",
+      "chainOfCustody": [
+        {
+          "officer": "HC Priya Sharma",
+          "action": "Initial Upload",
+          "time": "2024-03-15T09:23:11"
+        },
+        {
+          "officer": "Court Registry",
+          "action": "Admitted as Evidence",
+          "time": "2024-03-16T14:20:00"
+        }
+      ],
+      "_id": "ms0kxqk3db5b88"
+    }
+  ],
+  "User": [],
+  "Lawyer": [
+    {
+      "id": "lawyer_seed_1",
+      "userId": "lawyer_seed_1",
+      "name": "Adv. Priya Krishnamurthy",
+      "email": "priya@lexchain.in",
+      "barCouncilId": "KAR/2015/3421",
+      "licenseNo": "LIC-KA-3421",
+      "specialization": "Criminal Law",
+      "experience": 12,
+      "fee": 5000,
+      "rating": 4.8,
+      "ratingCount": 47,
+      "courtName": "Karnataka High Court",
+      "city": "Bangalore",
+      "phone": "9876543210",
+      "bio": "Expert in criminal defense and constitutional law.",
+      "verified": true,
+      "_id": "ms0kxqk513b5h2"
+    },
+    {
+      "id": "lawyer_seed_2",
+      "userId": "lawyer_seed_2",
+      "name": "Adv. Rahul Sharma",
+      "email": "rahul@lexchain.in",
+      "barCouncilId": "DL/2018/1234",
+      "licenseNo": "LIC-DL-1234",
+      "specialization": "Civil Law",
+      "experience": 7,
+      "fee": 3500,
+      "rating": 4.5,
+      "ratingCount": 29,
+      "courtName": "Delhi High Court",
+      "city": "Delhi",
+      "phone": "9876543211",
+      "bio": "Specializes in property disputes and civil matters.",
+      "verified": true,
+      "_id": "ms0kxqk6eeslsa"
+    }
+  ],
+  "Case": [],
+  "Hearing": [],
+  "CourtOrder": [],
+  "AccessRequest": [],
+  "LawyerRating": [],
+  "Feedback": [],
+  "WalletInteraction": []
+}
