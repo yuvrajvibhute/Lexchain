@@ -113,6 +113,23 @@ function generateId() {
     return Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
 }
 
+// Attach .toJSON() helper to objects
+function toDocObject(item) {
+    if (!item) return null;
+    const plain = JSON.parse(JSON.stringify(item));
+    Object.defineProperty(plain, 'toJSON', {
+        value: function () {
+            const copy = { ...this };
+            delete copy.toJSON;
+            return copy;
+        },
+        enumerable: false,
+        configurable: true,
+        writable: true
+    });
+    return plain;
+}
+
 // Query builder wrapper for standard Mongoose-like syntax
 class QueryBuilder {
     constructor(collectionName, filter = {}) {
@@ -189,14 +206,11 @@ class QueryBuilder {
             }
         }
 
-        // Deep copy items to simulate DB records
-        const clone = items => items.map(item => JSON.parse(JSON.stringify(item)));
-
         if (this._single) {
-            return matches.length > 0 ? JSON.parse(JSON.stringify(matches[0])) : null;
+            return matches.length > 0 ? toDocObject(matches[0]) : null;
         }
 
-        return clone(matches);
+        return matches.map(item => toDocObject(item));
     }
 
     then(resolve, reject) {
@@ -218,6 +232,12 @@ function createModel(modelName) {
             if (!this.id) this.id = this._id;
         }
 
+        toJSON() {
+            const copy = { ...this };
+            delete copy.toJSON;
+            return copy;
+        }
+
         async save() {
             await loadDatabase();
             const arr = dbStore[modelName];
@@ -229,7 +249,7 @@ function createModel(modelName) {
                 arr.push(plain);
             }
             saveDatabaseSync();
-            return this;
+            return toDocObject(this);
         }
     }
 
@@ -261,7 +281,7 @@ function createModel(modelName) {
         await loadDatabase();
         const instance = new ModelInstance(docData);
         await instance.save();
-        return JSON.parse(JSON.stringify(instance));
+        return toDocObject(instance);
     };
 
     ModelInstance.insertMany = async function (docsArray) {
@@ -270,7 +290,7 @@ function createModel(modelName) {
         for (const item of docsArray) {
             const inst = new ModelInstance(item);
             await inst.save();
-            created.push(JSON.parse(JSON.stringify(inst)));
+            created.push(toDocObject(inst));
         }
         return created;
     };
@@ -286,13 +306,13 @@ function createModel(modelName) {
                 applyUpdate(newDoc, update);
                 arr.push(newDoc);
                 saveDatabaseSync();
-                return JSON.parse(JSON.stringify(newDoc));
+                return toDocObject(newDoc);
             }
             return null;
         }
         applyUpdate(arr[idx], update);
         saveDatabaseSync();
-        return JSON.parse(JSON.stringify(arr[idx]));
+        return toDocObject(arr[idx]);
     };
 
     ModelInstance.findByIdAndUpdate = async function (id, update, options = {}) {
@@ -323,7 +343,7 @@ function createModel(modelName) {
                 return [{ _id: null, avg, count }];
             }
         }
-        return docs;
+        return docs.map(d => toDocObject(d));
     };
 
     return ModelInstance;

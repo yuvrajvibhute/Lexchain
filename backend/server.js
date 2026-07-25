@@ -289,7 +289,9 @@ app.post('/api/auth/email', async (req, res) => {
             { id, name, email, role: role || 'user', loginMethod: 'email', city, post, phone, aadhaar, fullAddress },
             { upsert: true, new: true }
         );
-        const token = jwt.sign(user.toJSON(), JWT_SECRET, { expiresIn: '7d' });
+        const userPayload = (user && typeof user.toJSON === 'function') ? user.toJSON() : { ...user };
+        delete userPayload.toJSON;
+        const token = jwt.sign(userPayload, JWT_SECRET, { expiresIn: '7d' });
         res.json({ user, token });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
@@ -312,18 +314,20 @@ app.post('/api/auth/wallet', async (req, res) => {
             if (role === 'judge' && passcode !== JUDGE_PASSCODE) return res.status(401).json({ error: 'Invalid judge passcode' });
 
             const user = await User.create({
-                id: address, address, name, email, role: role || 'user', loginMethod: 'wallet', city, post, phone, aadhaar, fullAddress
+                id: address, address, name: name || 'Citizen User', email: email || `${address.slice(0, 8)}@lexchain.io`, role: role || 'user', loginMethod: 'wallet', city, post, phone, aadhaar, fullAddress
             });
 
             if (role === 'lawyer') {
                 await Lawyer.create({
-                    id: address, userId: address, name, email, barCouncilId: barCouncilId || '', licenseNo: licenseNo || '', 
+                    id: address, userId: address, name: name || 'Lawyer User', email: email || `${address.slice(0, 8)}@lexchain.io`, barCouncilId: barCouncilId || '', licenseNo: licenseNo || '', 
                     specialization: specialization || 'General', experience: experience || 0, fee: fee || 0, city: city || '', 
                     courtName: courtName || '', verified: false
                 });
             }
 
-            const token = jwt.sign(user.toJSON(), JWT_SECRET, { expiresIn: '7d' });
+            const userPayload = (user && typeof user.toJSON === 'function') ? user.toJSON() : { ...user };
+            delete userPayload.toJSON;
+            const token = jwt.sign(userPayload, JWT_SECRET, { expiresIn: '7d' });
             return res.json({ user, token });
 
         } else {
@@ -337,7 +341,9 @@ app.post('/api/auth/wallet', async (req, res) => {
             if (role === 'admin' && passcode !== ADMIN_PASSCODE) return res.status(401).json({ error: 'Invalid admin passcode' });
             if (role === 'judge' && passcode !== JUDGE_PASSCODE) return res.status(401).json({ error: 'Invalid judge passcode' });
 
-            const token = jwt.sign(existingUser.toJSON(), JWT_SECRET, { expiresIn: '7d' });
+            const userPayload = (existingUser && typeof existingUser.toJSON === 'function') ? existingUser.toJSON() : { ...existingUser };
+            delete userPayload.toJSON;
+            const token = jwt.sign(userPayload, JWT_SECRET, { expiresIn: '7d' });
             return res.json({ user: existingUser, token });
         }
     } catch (err) { res.status(500).json({ error: err.message }); }
