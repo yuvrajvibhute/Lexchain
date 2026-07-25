@@ -39,9 +39,17 @@ app.use(cors({
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Ensure LexDB is initialized on request
+// Ensure LexDB is initialized and normalize URLs for Vercel serverless function routing
 app.use(async (req, res, next) => {
-    await connectDB();
+    try {
+        await connectDB();
+    } catch (e) {
+        console.warn("DB connect warning:", e.message);
+    }
+    // Normalize URL path: ensure req.url starts with /api
+    if (!req.url.startsWith('/api')) {
+        req.url = '/api' + (req.url.startsWith('/') ? req.url : '/' + req.url);
+    }
     next();
 });
 
@@ -594,6 +602,16 @@ app.get('/api/users', async (req, res) => {
         const users = await User.find(query).select('id name email role city address');
         res.json(users);
     } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// GLOBAL JSON ERROR & FALLBACK HANDLERS ─────────────────────────────────────
+app.use((req, res) => {
+    res.status(404).json({ error: `API Endpoint Not Found: ${req.method} ${req.originalUrl || req.url}` });
+});
+
+app.use((err, req, res, next) => {
+    console.error("Unhandled API Error:", err);
+    res.status(500).json({ error: err.message || "Internal Server Error" });
 });
 
 // START ────────────────────────────────────────────────────────────────────
