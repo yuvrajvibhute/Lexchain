@@ -1,4 +1,4 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import Home from "./pages/Home";
@@ -8,7 +8,10 @@ import UserDashboard from "./pages/UserDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import LawyerDashboard from "./pages/LawyerDashboard";
 import CourtDashboard from "./pages/CourtDashboard";
+import AnalyticsDashboard from "./pages/AnalyticsDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useEffect } from "react";
+import { trackPageView } from "./analytics";
 import "./App.css";
 
 function roleHome(role) {
@@ -20,6 +23,13 @@ function roleHome(role) {
 
 function AppRoutes() {
   const { user } = useAuth();
+  const location = useLocation();
+
+  // Track page views on route change
+  useEffect(() => {
+    trackPageView(location.pathname, user?.role || null);
+  }, [location.pathname]);
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />
@@ -44,6 +54,11 @@ function AppRoutes() {
       <Route path="/court" element={
         <ProtectedRoute allowedRoles={["judge"]}>
           <CourtDashboard />
+        </ProtectedRoute>
+      } />
+      <Route path="/analytics" element={
+        <ProtectedRoute allowedRoles={["admin", "judge"]}>
+          <AnalyticsDashboard />
         </ProtectedRoute>
       } />
 
