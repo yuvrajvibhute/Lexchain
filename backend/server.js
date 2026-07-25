@@ -10,7 +10,11 @@ const FormData = require('form-data');
 const jwt = require('jsonwebtoken');
 const mongoose = require('mongoose');
 const { connectDB, seedDatabase } = require('./db');
-const { Evidence, User, Lawyer, Case, Hearing, CourtOrder, AccessRequest, LawyerRating } = require('./models');
+const { Evidence, User, Lawyer, Case, Hearing, CourtOrder, AccessRequest, LawyerRating, Feedback, WalletInteraction } = require('./models');
+
+// Optional: Stellar integration (graceful degradation if not available)
+let stellarModule = null;
+try { stellarModule = require('./stellar'); } catch (e) { console.warn('[Stellar] Module unavailable:', e.message); }
 
 const JWT_SECRET = process.env.JWT_SECRET || 'nyaya-chain-secret-2024';
 const ADMIN_PASSCODE = process.env.ADMIN_PASSCODE || 'NYAYA2024';
@@ -173,6 +177,8 @@ app.get('/api/evidence', async (req, res) => {
 });
 
 app.post('/api/evidence', upload.single('file'), async (req, res) => {
+    // Stellar anchoring happens after evidence is created (see below)
+
     try {
         const { name, caseNo, caseId, officer, station, type } = req.body;
         const id = "EV-" + new Date().getFullYear() + "-" + Math.floor(1000 + Math.random() * 9000);
@@ -531,7 +537,61 @@ app.post('/api/cases/:id/assign-judge', async (req, res) => {
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
-// USERS ROUTES ─────────────────────────────────────────────────────────────
+// FEEDBACK ROUTES (Level 4: User Feedback Collection) ────────────────────────
+app.post('/api/feedback', async (req, res) => {
+    try {
+        const { rating, category, comment, name, email, userId, userRole, page } = req.body;
+        if (!rating || !comment) return res.status(400).json({ error: 'Rating and comment required' });
+        const fb = await Feedback.create({ rating, category, comment, name, email, userId, userRole, page });
+        res.json({ success: true, feedback: fb });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/feedback', async (req, res) => {
+    try {
+        const feedbacks = await Feedback.find().sort({ timestamp: -1 }).limit(100);
+        const total = feedbacks.length;
+        const avgRating = total > 0 ? (feedbacks.reduce((s, f) => s + f.rating, 0) / total).toFixed(1) : 0;
+        res.json({ feedbacks, total, avgRating });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// WALLET INTERACTION TRACKING (Level 4: Proof of Wallet Interactions) ──────────
+app.post('/api/wallet-interactions', async (req, res) => {
+    try {
+        const { walletAddress, method, action, role, userId, name, metadata } = req.body;
+        if (!walletAddress) return res.status(400).json({ error: 'walletAddress required' });
+        const wi = await WalletInteraction.create({ walletAddress, method, action, role, userId, name, metadata });
+        res.json({ success: true, interaction: wi });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+app.get('/api/wallet-interactions', async (req, res) => {
+    try {
+        const interactions = await WalletInteraction.find().sort({ timestamp: -1 }).limit(200);
+        const uniqueWallets = [...new Set(interactions.map(w => w.walletAddress))];
+        res.json({ interactions, uniqueWallets, totalInteractions: interactions.length, uniqueCount: uniqueWallets.length });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// STELLAR BLOCKCHAIN STATUS ────────────────────────────────────────────────────
+app.get('/api/stellar/status', async (req, res) => {
+    try {
+        if (stellarModule) {
+            const status = await stellarModule.getStellarStatus();
+            res.json({ ...status, operatorPublicKey: stellarModule.getOperatorPublicKey() });
+        } else {
+            res.json({
+                network: 'testnet',
+                connected: false,
+                contractId: 'CBIELTK6YBZJU5UP2WWQEQ4YKR525RABARNZHRBIG4DPXNYGZFKC75YA',
+                message: 'Stellar SDK not loaded'
+            });
+        }
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// USERS ROUTES ─────────────────────────────────────────────────────────────────
 app.get('/api/users', async (req, res) => {
     try {
         const { search } = req.query;

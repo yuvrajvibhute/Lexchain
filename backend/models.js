@@ -140,6 +140,31 @@ const LawyerRatingSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+// --- Feedback Schema (Level 4: User Feedback Collection) ---
+const FeedbackSchema = new mongoose.Schema({
+  rating: { type: Number, required: true, min: 1, max: 5 },
+  category: { type: String, default: 'Overall Experience' },
+  comment: { type: String, required: true },
+  name: { type: String, default: 'Anonymous' },
+  email: String,
+  userId: String,
+  userRole: { type: String, default: 'guest' },
+  page: String,
+  timestamp: { type: Date, default: Date.now }
+});
+
+// --- Wallet Interaction Schema (Level 4: Proof of Wallet Interactions) ---
+const WalletInteractionSchema = new mongoose.Schema({
+  walletAddress: { type: String, required: true, lowercase: true },
+  method: String,        // metamask, privy, walletconnect, etc.
+  action: String,        // connect, sign, register, login, etc.
+  role: String,          // user, admin, lawyer, judge
+  userId: String,
+  name: String,
+  timestamp: { type: Date, default: Date.now },
+  metadata: mongoose.Schema.Types.Mixed
+});
+
 module.exports = {
   Evidence: mongoose.model('Evidence', EvidenceSchema),
   User: mongoose.model('User', UserSchema),
@@ -148,5 +173,7 @@ module.exports = {
   Hearing: mongoose.model('Hearing', HearingSchema),
   CourtOrder: mongoose.model('CourtOrder', CourtOrderSchema),
   AccessRequest: mongoose.model('AccessRequest', AccessRequestSchema),
-  LawyerRating: mongoose.model('LawyerRating', LawyerRatingSchema)
+  LawyerRating: mongoose.model('LawyerRating', LawyerRatingSchema),
+  Feedback: mongoose.model('Feedback', FeedbackSchema),
+  WalletInteraction: mongoose.model('WalletInteraction', WalletInteractionSchema)
 };
