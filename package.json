@@ -9,6 +9,7 @@
     "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\""
   },
   "dependencies": {
+    "@stellar/stellar-sdk": "^16.1.0",
     "axios": "^1.16.1",
     "concurrently": "^8.2.2",
     "cors": "^2.8.6",
