@@ -14,7 +14,7 @@
 
 **A decentralized, tamper-proof legal evidence management system built on blockchain technology.**
 
-[🔴 Live Demo](https://lexchain.vercel.app) · [📖 API Docs](#-api-reference) · [🎥 Demo Video](#-demo-video) · [🐛 Report Bug](https://github.com/yuvrajvibhute/Lexchain/issues)
+[🔴 Live Demo](https://lexchain.vercel.app) · [📖 API Docs](#-api-reference) · [🎥 Demo Video](#-demo-video) · [🐛 Report Bug](https://github.com/yuvishine40/Lexchain/issues)
 
 </div>
 
@@ -24,7 +24,7 @@
 
 | Requirement | Status | Details |
 |-------------|--------|---------|
-| ✅ Public GitHub Repository | **DONE** | [github.com/yuvrajvibhute/Lexchain](https://github.com/yuvrajvibhute/Lexchain) |
+| ✅ Public GitHub Repository | **DONE** | [github.com/yuvishine40/Lexchain](https://github.com/yuvishine40/Lexchain) |
 | ✅ README with complete documentation | **DONE** | This document |
 | ✅ Minimum 15+ meaningful commits | **DONE** | 35+ commits |
 | ✅ Live demo link | **DONE** | [lexchain.vercel.app](https://lexchain.vercel.app) |
@@ -306,7 +306,7 @@ lexchain/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/yuvrajvibhute/Lexchain.git
+git clone https://github.com/yuvishine40/Lexchain.git
 cd Lexchain
 
 # 2. Install all dependencies
@@ -462,6 +462,6 @@ ISC License — see [LICENSE](LICENSE) for details.
 
 *LexChain — Making legal evidence immutable, verifiable, and trustworthy.*
 
-[![GitHub stars](https://img.shields.io/github/stars/yuvrajvibhute/Lexchain?style=social)](https://github.com/yuvrajvibhute/Lexchain)
+[![GitHub stars](https://img.shields.io/github/stars/yuvishine40/Lexchain?style=social)](https://github.com/yuvishine40/Lexchain)
 
 </div>
