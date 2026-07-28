@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const FormData = require('form-data');
+const jwt = require('jsonwebtoken');
 const { connectDB, seedDatabase } = require('./db');
 const { Evidence, User, Lawyer, Case, Hearing, CourtOrder, AccessRequest, LawyerRating, Feedback, WalletInteraction } = require('./models');
 
@@ -39,16 +40,12 @@ app.use(cors({
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
-// Ensure LexDB is initialized and normalize URLs for Vercel serverless function routing
+// Ensure LexDB is initialized on every serverless invocation
 app.use(async (req, res, next) => {
     try {
         await connectDB();
     } catch (e) {
         console.warn("DB connect warning:", e.message);
-    }
-    // Normalize URL path: ensure req.url starts with /api
-    if (!req.url.startsWith('/api')) {
-        req.url = '/api' + (req.url.startsWith('/') ? req.url : '/' + req.url);
     }
     next();
 });
@@ -289,10 +286,9 @@ app.post('/api/auth/email', async (req, res) => {
             { id, name, email, role: role || 'user', loginMethod: 'email', city, post, phone, aadhaar, fullAddress },
             { upsert: true, new: true }
         );
-        const userPayload = (user && typeof user.toJSON === 'function') ? user.toJSON() : { ...user };
-        delete userPayload.toJSON;
+        const userPayload = JSON.parse(JSON.stringify(user || {}));
         const token = jwt.sign(userPayload, JWT_SECRET, { expiresIn: '7d' });
-        res.json({ user, token });
+        res.json({ user: userPayload, token });
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
 
@@ -325,10 +321,9 @@ app.post('/api/auth/wallet', async (req, res) => {
                 });
             }
 
-            const userPayload = (user && typeof user.toJSON === 'function') ? user.toJSON() : { ...user };
-            delete userPayload.toJSON;
+            const userPayload = JSON.parse(JSON.stringify(user || {}));
             const token = jwt.sign(userPayload, JWT_SECRET, { expiresIn: '7d' });
-            return res.json({ user, token });
+            return res.json({ user: userPayload, token });
 
         } else {
             // LOGIN FLOW
@@ -341,10 +336,9 @@ app.post('/api/auth/wallet', async (req, res) => {
             if (role === 'admin' && passcode !== ADMIN_PASSCODE) return res.status(401).json({ error: 'Invalid admin passcode' });
             if (role === 'judge' && passcode !== JUDGE_PASSCODE) return res.status(401).json({ error: 'Invalid judge passcode' });
 
-            const userPayload = (existingUser && typeof existingUser.toJSON === 'function') ? existingUser.toJSON() : { ...existingUser };
-            delete userPayload.toJSON;
+            const userPayload = JSON.parse(JSON.stringify(existingUser || {}));
             const token = jwt.sign(userPayload, JWT_SECRET, { expiresIn: '7d' });
-            return res.json({ user: existingUser, token });
+            return res.json({ user: userPayload, token });
         }
     } catch (err) { res.status(500).json({ error: err.message }); }
 });

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { trackEvent, trackPageView } from '../analytics';
+import { trackEvent } from '../analytics';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
@@ -15,7 +15,7 @@ const CATEGORIES = [
   'Other',
 ];
 
-export default function FeedbackPage({ user, onClose }) {
+export default function FeedbackPage({ user, onClose, standalone = false }) {
   const [rating, setRating] = useState(0);
   const [hovered, setHovered] = useState(0);
   const [category, setCategory] = useState('Overall Experience');
@@ -172,7 +172,7 @@ export default function FeedbackPage({ user, onClose }) {
 }
 
 const overlayStyle = {
-  position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)',
+  position: 'fixed', inset: 0, background: 'rgba(2,8,24,0.97)', backdropFilter: 'blur(8px)',
   display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 9999, padding: 20,
 };
 const modalStyle = {

@@ -1,7 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "cd frontend && npm install && npm run build",
+  "installCommand": "npm install && cd frontend && npm install",
+  "buildCommand": "cd frontend && npm run build",
   "outputDirectory": "frontend/dist",
+  "functions": {
+    "api/index.js": {
+      "runtime": "nodejs20.x",
+      "maxDuration": 30,
+      "includeFiles": "backend/**"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -12,11 +20,12 @@
       "destination": "/api/index.js"
     },
     {
-      "source": "/((?!api|assets|.*\\..*).*)",
+      "source": "/((?!api|assets|_next|.*\\..*).*)",
       "destination": "/index.html"
     }
   ],
   "env": {
-    "NODE_ENV": "production"
+    "NODE_ENV": "production",
+    "VERCEL": "1"
   }
 }

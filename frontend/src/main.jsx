@@ -15,7 +15,7 @@ import "./index.css";
 
 
 // ─── Privy config ─────────────────────────────────────────────────────────────
-const PRIVY_APP_ID = "cmnif2ahs01am0clcp3zs15df";
+const PRIVY_APP_ID = import.meta.env.VITE_PRIVY_APP_ID || "cmnif2ahs01am0clcp3zs15df";
 
 const wagmiConfig = createConfig({
   chains: [mainnet, polygon, optimism],

@@ -94,14 +94,25 @@ function matchFilter(doc, filter) {
     return true;
 }
 
-// Apply updates ($set, etc.)
+// Apply updates ($set, $push, $inc, etc.)
 function applyUpdate(doc, update) {
     if (!update) return doc;
     if (update.$set) {
         Object.assign(doc, update.$set);
     }
+    if (update.$push) {
+        for (const key of Object.keys(update.$push)) {
+            if (!Array.isArray(doc[key])) doc[key] = [];
+            doc[key].push(update.$push[key]);
+        }
+    }
+    if (update.$inc) {
+        for (const key of Object.keys(update.$inc)) {
+            doc[key] = (Number(doc[key]) || 0) + Number(update.$inc[key]);
+        }
+    }
     for (const key of Object.keys(update)) {
-        if (key !== '$set' && key !== '$inc' && key !== '$push') {
+        if (key !== '$set' && key !== '$push' && key !== '$inc' && key !== '$unset') {
             doc[key] = update[key];
         }
     }
@@ -301,8 +312,12 @@ function createModel(modelName) {
         let idx = arr.findIndex(doc => matchFilter(doc, filter));
         if (idx < 0) {
             if (options.upsert) {
-                const newDoc = { _id: generateId(), id: generateId() };
-                if (filter.id) newDoc.id = filter.id;
+                const newId = filter.id || generateId();
+                const newDoc = { _id: newId, id: newId };
+                // Apply the filter fields first, then the update
+                for (const key of Object.keys(filter)) {
+                    if (!key.startsWith('$')) newDoc[key] = filter[key];
+                }
                 applyUpdate(newDoc, update);
                 arr.push(newDoc);
                 saveDatabaseSync();
@@ -316,7 +331,23 @@ function createModel(modelName) {
     };
 
     ModelInstance.findByIdAndUpdate = async function (id, update, options = {}) {
-        return ModelInstance.findOneAndUpdate({ id }, update, options);
+        // Search by both 'id' string field and '_id' field for compatibility
+        await loadDatabase();
+        const arr = dbStore[modelName] || [];
+        const idx = arr.findIndex(doc => doc.id === id || doc._id === id);
+        if (idx < 0) {
+            if (options.upsert) {
+                const newDoc = { _id: id, id };
+                applyUpdate(newDoc, update);
+                arr.push(newDoc);
+                saveDatabaseSync();
+                return toDocObject(newDoc);
+            }
+            return null;
+        }
+        applyUpdate(arr[idx], update);
+        saveDatabaseSync();
+        return toDocObject(arr[idx]);
     };
 
     ModelInstance.updateOne = async function (filter, update) {
@@ -344,6 +375,16 @@ function createModel(modelName) {
             }
         }
         return docs.map(d => toDocObject(d));
+    };
+
+    ModelInstance.distinct = async function (field, filter = {}) {
+        await loadDatabase();
+        const arr = dbStore[modelName] || [];
+        const filtered = filter && Object.keys(filter).length > 0
+            ? arr.filter(doc => matchFilter(doc, filter))
+            : arr;
+        const unique = [...new Set(filtered.map(doc => doc[field]).filter(v => v !== undefined && v !== null))];
+        return unique;
     };
 
     return ModelInstance;

@@ -9,6 +9,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import LawyerDashboard from "./pages/LawyerDashboard";
 import CourtDashboard from "./pages/CourtDashboard";
 import AnalyticsDashboard from "./pages/AnalyticsDashboard";
+import FeedbackPage from "./pages/FeedbackPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { useEffect } from "react";
 import { trackPageView } from "./analytics";
@@ -35,6 +36,13 @@ function AppRoutes() {
       <Route path="/" element={<Home />} />
       <Route path="/login" element={user ? <Navigate to={roleHome(user.role)} replace /> : <Login />} />
       <Route path="/register" element={user ? <Navigate to={roleHome(user.role)} replace /> : <Register />} />
+      {/* Public feedback page — accessible without login */}
+      <Route path="/feedback" element={
+        <FeedbackPage
+          user={user}
+          onClose={() => window.history.length > 1 ? window.history.back() : (window.location.href = '/')}
+        />
+      } />
 
       <Route path="/dashboard" element={
         <ProtectedRoute allowedRoles={["user"]}>
