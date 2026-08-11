@@ -74,6 +74,344 @@
   "CourtOrder": [],
   "AccessRequest": [],
   "LawyerRating": [],
-  "Feedback": [],
-  "WalletInteraction": []
+  "Feedback": [
+    {
+      "rating": 5,
+      "category": "Overall Experience",
+      "comment": "UI is very intuitive.",
+      "name": "Aravind Deshmukh",
+      "email": "aravinddeshmukh@gmail.com",
+      "userId": "gcra6g5zlekwnffn3lp2gs2kxz74c7h2p5aikomd42kynb3ijmp4ch52",
+      "userRole": "user",
+      "page": "/",
+      "_id": "ms4tninbzmsnbt",
+      "id": "ms4tninbzmsnbt"
+    },
+    {
+      "rating": 4,
+      "category": "Overall Experience",
+      "comment": "Nice.",
+      "name": "Sunita Agarwal",
+      "email": "sunitaagarwal@gmail.com",
+      "userId": "gd5qvxwgr3y5o27ubcoqzynaknihwytcj2ruimbewh7qjf7oekrcba5h",
+      "userRole": "user",
+      "page": "/",
+      "_id": "ms4tnineu1hp09",
+      "id": "ms4tnineu1hp09"
+    },
+    {
+      "rating": 5,
+      "category": "Overall Experience",
+      "comment": "Very Impressive idea",
+      "name": "Rajesh Das",
+      "email": "rajeshdas81@gmail.com",
+      "userId": "gck2o3izpv5wesr7qtkugukl5h46octi27xohvzdr77njqpoq3zptu6d",
+      "userRole": "user",
+      "page": "/",
+      "_id": "ms4tninigmosek",
+      "id": "ms4tninigmosek"
+    },
+    {
+      "rating": 4,
+      "category": "Overall Experience",
+      "comment": "Smooth UI feels like regular checkout.",
+      "name": "Sneha Pathak",
+      "email": "snehapathak@gmail.com",
+      "userId": "gdzf4g4rnehsampknnpi65iabztat5m23fb3bqk3aos5oumflpno2uhq",
+      "userRole": "user",
+      "page": "/",
+      "_id": "ms4tninq9ryfmd",
+      "id": "ms4tninq9ryfmd"
+    },
+    {
+      "rating": 5,
+      "category": "Overall Experience",
+      "comment": "Best for secure evidence store",
+      "name": "Akshaya Awasthy",
+      "email": "akshayawasthy83@gmail.com",
+      "userId": "gcnhscgcwzz3w5etwzenpworqihtepcb57or52xk3mdtbwwwnnumqozi",
+      "userRole": "admin",
+      "page": "/",
+      "_id": "ms4tninun94ma9",
+      "id": "ms4tninun94ma9"
+    },
+    {
+      "rating": 5,
+      "category": "Overall Experience",
+      "comment": "perfect integration and ui layout",
+      "name": "Shantanu Udhane",
+      "email": "udhaneshantanu@gmail.com",
+      "userId": "gcnhscgcwzz3w5etwzenpworqihtepcb57or52xk3mdvf53fsggetbsu",
+      "userRole": "user",
+      "page": "/",
+      "_id": "ms4tninyl1xiwu",
+      "id": "ms4tninyl1xiwu"
+    },
+    {
+      "rating": 5,
+      "category": "Overall Experience",
+      "comment": "I loved the smooth interface and overall features. App is easy to use.",
+      "name": "Vaibhavi Agale",
+      "email": "vaibhaviagale7799@gmail.com",
+      "userId": "galwweghomu5yodtzbvgpfp2ohcjh5vo3vkwnmw7znt6oecinvpqt7sq",
+      "userRole": "user",
+      "page": "/",
+      "_id": "ms4tnio2bj9v6c",
+      "id": "ms4tnio2bj9v6c"
+    },
+    {
+      "rating": 4,
+      "category": "Overall Experience",
+      "comment": "the ux was good the colors were also nicely implemented",
+      "name": "Neel Pote",
+      "email": "neelpote44@gmail.com",
+      "userId": "gaz27sj7yflugo2o4jctowlnnxqz5c7h5a7wfwebalt6f6jelkjknv44",
+      "userRole": "user",
+      "page": "/",
+      "_id": "ms4tnio5at4wou",
+      "id": "ms4tnio5at4wou"
+    },
+    {
+      "rating": 5,
+      "category": "Overall Experience",
+      "comment": "very good problem solving application",
+      "name": "Tanmay Tadd",
+      "email": "tanmaytad23@gmail.com",
+      "userId": "gayjalsdda3qyiiqdfeshzchnkgwv43c76y2msl6mzs6rcgo7yo3htmq",
+      "userRole": "user",
+      "page": "/",
+      "_id": "ms4tnio86t6cas",
+      "id": "ms4tnio86t6cas"
+    },
+    {
+      "rating": 5,
+      "category": "Overall Experience",
+      "comment": "Excellent UI and Functionality",
+      "name": "Omkar Nanavare",
+      "email": "omkarnanavare1969@gmail.com",
+      "userId": "gbafatoiwcwj4vfq3kqemsvnw6n7wtzksnhq2rofoucfo6h57cfqkhxo",
+      "userRole": "user",
+      "page": "/",
+      "_id": "ms4tnioc0h3v7b",
+      "id": "ms4tnioc0h3v7b"
+    },
+    {
+      "rating": 5,
+      "category": "Overall Experience",
+      "comment": "its overall good but expand the users..",
+      "name": "Yash Annadate",
+      "email": "yashannadate2005@gmail.com",
+      "userId": "gbwdgdxan4aw22obeqadiosk2ge7efndlzdtbjv6ap33septgnngfdae",
+      "userRole": "user",
+      "page": "/",
+      "_id": "ms4tnioi59tt6m",
+      "id": "ms4tnioi59tt6m"
+    },
+    {
+      "rating": 5,
+      "category": "Overall Experience",
+      "comment": "The application is good just focused on user-boarding",
+      "name": "Thanchan Bhumij",
+      "email": "thanchanb@gmail.com",
+      "userId": "gdhpnsqinmcuno6dowo7hsaw5ntno2mdy6ldhgkpjmglusumlvwbjkj6",
+      "userRole": "user",
+      "page": "/",
+      "_id": "ms4tniokwyqnzz",
+      "id": "ms4tniokwyqnzz"
+    }
+  ],
+  "WalletInteraction": [
+    {
+      "walletAddress": "gcra6g5zlekwnffn3lp2gs2kxz74c7h2p5aikomd42kynb3ijmp4ch52",
+      "method": "stellar",
+      "action": "registered",
+      "role": "user",
+      "userId": "gcra6g5zlekwnffn3lp2gs2kxz74c7h2p5aikomd42kynb3ijmp4ch52",
+      "name": "Aravind Deshmukh",
+      "metadata": {
+        "email": "aravinddeshmukh@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.332Z"
+      },
+      "_id": "ms4tnin197f0ue",
+      "id": "ms4tnin197f0ue"
+    },
+    {
+      "walletAddress": "gd5qvxwgr3y5o27ubcoqzynaknihwytcj2ruimbewh7qjf7oekrcba5h",
+      "method": "stellar",
+      "action": "registered",
+      "role": "user",
+      "userId": "gd5qvxwgr3y5o27ubcoqzynaknihwytcj2ruimbewh7qjf7oekrcba5h",
+      "name": "Sunita Agarwal",
+      "metadata": {
+        "email": "sunitaagarwal@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.344Z"
+      },
+      "_id": "ms4tnincw7mtqm",
+      "id": "ms4tnincw7mtqm"
+    },
+    {
+      "walletAddress": "gck2o3izpv5wesr7qtkugukl5h46octi27xohvzdr77njqpoq3zptu6d",
+      "method": "stellar",
+      "action": "filed_case",
+      "role": "user",
+      "userId": "gck2o3izpv5wesr7qtkugukl5h46octi27xohvzdr77njqpoq3zptu6d",
+      "name": "Rajesh Das",
+      "metadata": {
+        "email": "rajeshdas81@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.348Z"
+      },
+      "_id": "ms4tningt7bq5g",
+      "id": "ms4tningt7bq5g"
+    },
+    {
+      "walletAddress": "gdzf4g4rnehsampknnpi65iabztat5m23fb3bqk3aos5oumflpno2uhq",
+      "method": "stellar",
+      "action": "hired_lawyer",
+      "role": "user",
+      "userId": "gdzf4g4rnehsampknnpi65iabztat5m23fb3bqk3aos5oumflpno2uhq",
+      "name": "Sneha Pathak",
+      "metadata": {
+        "email": "snehapathak@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.354Z"
+      },
+      "_id": "ms4tninmze1by4",
+      "id": "ms4tninmze1by4"
+    },
+    {
+      "walletAddress": "gcnhscgcwzz3w5etwzenpworqihtepcb57or52xk3mdtbwwwnnumqozi",
+      "method": "stellar",
+      "action": "evidence_upload",
+      "role": "admin",
+      "userId": "gcnhscgcwzz3w5etwzenpworqihtepcb57or52xk3mdtbwwwnnumqozi",
+      "name": "Akshaya Awasthy",
+      "metadata": {
+        "email": "akshayawasthy83@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.360Z"
+      },
+      "_id": "ms4tninss27fcb",
+      "id": "ms4tninss27fcb"
+    },
+    {
+      "walletAddress": "gcnhscgcwzz3w5etwzenpworqihtepcb57or52xk3mdvf53fsggetbsu",
+      "method": "stellar",
+      "action": "registered",
+      "role": "user",
+      "userId": "gcnhscgcwzz3w5etwzenpworqihtepcb57or52xk3mdvf53fsggetbsu",
+      "name": "Shantanu Udhane",
+      "metadata": {
+        "email": "udhaneshantanu@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.363Z"
+      },
+      "_id": "ms4tninv6grfhv",
+      "id": "ms4tninv6grfhv"
+    },
+    {
+      "walletAddress": "galwweghomu5yodtzbvgpfp2ohcjh5vo3vkwnmw7znt6oecinvpqt7sq",
+      "method": "stellar",
+      "action": "registered",
+      "role": "user",
+      "userId": "galwweghomu5yodtzbvgpfp2ohcjh5vo3vkwnmw7znt6oecinvpqt7sq",
+      "name": "Vaibhavi Agale",
+      "metadata": {
+        "email": "vaibhaviagale7799@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.368Z"
+      },
+      "_id": "ms4tnio01xu07w",
+      "id": "ms4tnio01xu07w"
+    },
+    {
+      "walletAddress": "gaz27sj7yflugo2o4jctowlnnxqz5c7h5a7wfwebalt6f6jelkjknv44",
+      "method": "stellar",
+      "action": "filed_case",
+      "role": "user",
+      "userId": "gaz27sj7yflugo2o4jctowlnnxqz5c7h5a7wfwebalt6f6jelkjknv44",
+      "name": "Neel Pote",
+      "metadata": {
+        "email": "neelpote44@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.372Z"
+      },
+      "_id": "ms4tnio4h7jyg6",
+      "id": "ms4tnio4h7jyg6"
+    },
+    {
+      "walletAddress": "gayjalsdda3qyiiqdfeshzchnkgwv43c76y2msl6mzs6rcgo7yo3htmq",
+      "method": "stellar",
+      "action": "registered",
+      "role": "user",
+      "userId": "gayjalsdda3qyiiqdfeshzchnkgwv43c76y2msl6mzs6rcgo7yo3htmq",
+      "name": "Tanmay Tadd",
+      "metadata": {
+        "email": "tanmaytad23@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.374Z"
+      },
+      "_id": "ms4tnio6w2xvdh",
+      "id": "ms4tnio6w2xvdh"
+    },
+    {
+      "walletAddress": "gbafatoiwcwj4vfq3kqemsvnw6n7wtzksnhq2rofoucfo6h57cfqkhxo",
+      "method": "stellar",
+      "action": "hired_lawyer",
+      "role": "user",
+      "userId": "gbafatoiwcwj4vfq3kqemsvnw6n7wtzksnhq2rofoucfo6h57cfqkhxo",
+      "name": "Omkar Nanavare",
+      "metadata": {
+        "email": "omkarnanavare1969@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.378Z"
+      },
+      "_id": "ms4tnioas9j5dl",
+      "id": "ms4tnioas9j5dl"
+    },
+    {
+      "walletAddress": "gbwdgdxan4aw22obeqadiosk2ge7efndlzdtbjv6ap33septgnngfdae",
+      "method": "stellar",
+      "action": "registered",
+      "role": "user",
+      "userId": "gbwdgdxan4aw22obeqadiosk2ge7efndlzdtbjv6ap33septgnngfdae",
+      "name": "Yash Annadate",
+      "metadata": {
+        "email": "yashannadate2005@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.384Z"
+      },
+      "_id": "ms4tniogolcs0z",
+      "id": "ms4tniogolcs0z"
+    },
+    {
+      "walletAddress": "gdhpnsqinmcuno6dowo7hsaw5ntno2mdy6ldhgkpjmglusumlvwbjkj6",
+      "method": "stellar",
+      "action": "registered",
+      "role": "user",
+      "userId": "gdhpnsqinmcuno6dowo7hsaw5ntno2mdy6ldhgkpjmglusumlvwbjkj6",
+      "name": "Thanchan Bhumij",
+      "metadata": {
+        "email": "thanchanb@gmail.com",
+        "network": "stellar-testnet",
+        "seeded": true,
+        "seededAt": "2026-07-28T15:39:46.387Z"
+      },
+      "_id": "ms4tnioj9ux6yk",
+      "id": "ms4tnioj9ux6yk"
+    }
+  ]
 }
