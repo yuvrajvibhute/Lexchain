@@ -24,7 +24,7 @@
 
 | Requirement | Status | Details |
 |-------------|--------|---------|
-| ✅ Public GitHub Repository | **DONE** | [github.com/yuvishine40/Lexchain](https://github.com/yuvishine40/Lexchain) |
+| ✅ Public GitHub Repository | **DONE** | [github.com/yuvrajvibhute/Lexchain](https://github.com/yuvrajvibhute/Lexchain) |
 | ✅ README with complete documentation | **DONE** | This document |
 | ✅ Minimum 15+ meaningful commits | **DONE** | 35+ commits |
 | ✅ Live demo link | **DONE** | [lexchain.vercel.app](https://lexchain.vercel.app) |
