@@ -10,6 +10,10 @@ const FormData = require('form-data');
 const jwt = require('jsonwebtoken');
 const { connectDB, seedDatabase } = require('./db');
 const { Evidence, User, Lawyer, Case, Hearing, CourtOrder, AccessRequest, LawyerRating, Feedback, WalletInteraction } = require('./models');
+const { requireAuth, requireRole, optionalAuth } = require('./middleware/auth');
+const { apiLimiter, authLimiter, evidenceLimiter } = require('./middleware/rateLimit');
+const { sanitize, validateRequired, validateEvidenceUpload, validateWalletAuth } = require('./middleware/validate');
+const { anchorWithRetry, getStellarQueueStatus } = require('./stellarRetry');
 
 // Optional: Stellar integration (graceful degradation if not available)
 let stellarModule = null;
@@ -38,6 +42,8 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 app.use(express.json());
+app.use(sanitize);          // strip XSS from all request bodies
+app.use('/api', apiLimiter); // global rate limit on all /api routes
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Ensure LexDB is initialized on every serverless invocation
@@ -310,7 +316,7 @@ app.patch('/api/evidence/:id/approval', async (req, res) => {
 });
 
 // AUTH ROUTES ─────────────────────────────────────────────────────────────
-app.post('/api/auth/email', async (req, res) => {
+app.post('/api/auth/email', authLimiter, async (req, res) => {
     try {
         const { name, email, role, passcode, city, post, phone, aadhaar, fullAddress } = req.body;
         if (!name || !email) return res.status(400).json({ error: 'Name and email required' });
@@ -639,6 +645,79 @@ app.get('/api/users', async (req, res) => {
         const users = await User.find(query).select('id name email role city address');
         res.json(users);
     } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// CASES STATS ROUTE ─────────────────────────────────────────────────────────────
+app.get('/api/cases/stats', async (req, res) => {
+    try {
+        const total = await Case.countDocuments();
+        const byStatus = await Case.aggregate([
+            { $group: { _id: '$status', count: { $sum: 1 } } }
+        ]);
+        const byCategory = await Case.aggregate([
+            { $group: { _id: '$category', count: { $sum: 1 } } }
+        ]);
+        const recentCases = await Case.find().sort({ createdAt: -1 }).limit(5).select('id title status category createdAt');
+        const totalEvidence = await Evidence.countDocuments();
+        const verifiedEvidence = await Evidence.countDocuments({ status: 'verified' });
+        const totalLawyers = await Lawyer.countDocuments({ verified: true });
+        const totalUsers = await User.countDocuments({ role: 'user' });
+
+        res.json({
+            cases: {
+                total,
+                byStatus: Object.fromEntries(byStatus.map(s => [s._id || 'unknown', s.count])),
+                byCategory: Object.fromEntries(byCategory.map(c => [c._id || 'Other', c.count])),
+                recent: recentCases
+            },
+            evidence: { total: totalEvidence, verified: verifiedEvidence },
+            users: { total: totalUsers, lawyers: totalLawyers },
+            generatedAt: new Date().toISOString()
+        });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// EVIDENCE AUDIT LOG (paginated) ──────────────────────────────────────────────
+app.get('/api/evidence/audit-log', async (req, res) => {
+    try {
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(50, parseInt(req.query.limit) || 20);
+        const skip = (page - 1) * limit;
+        const { caseId, status, from, to } = req.query;
+
+        let query = {};
+        if (caseId) query.caseId = caseId;
+        if (status) query.status = status;
+        if (from || to) {
+            query.timestamp = {};
+            if (from) query.timestamp.$gte = from;
+            if (to) query.timestamp.$lte = to;
+        }
+
+        const [items, total] = await Promise.all([
+            Evidence.find(query)
+                .sort({ timestamp: -1 })
+                .skip(skip)
+                .limit(limit)
+                .select('id name type status hash ipfsCid stellarTxHash caseId caseNo uploadedBy station timestamp courtApproval chainOfCustody'),
+            Evidence.countDocuments(query)
+        ]);
+
+        res.json({
+            items,
+            pagination: {
+                page, limit, total,
+                totalPages: Math.ceil(total / limit),
+                hasNext: page * limit < total,
+                hasPrev: page > 1
+            }
+        });
+    } catch (err) { res.status(500).json({ error: err.message }); }
+});
+
+// STELLAR QUEUE STATUS ─────────────────────────────────────────────────────────
+app.get('/api/stellar/queue', requireAuth, requireRole('admin', 'judge'), (req, res) => {
+    res.json(getStellarQueueStatus());
 });
 
 // GLOBAL JSON ERROR & FALLBACK HANDLERS ─────────────────────────────────────
