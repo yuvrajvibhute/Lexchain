@@ -242,6 +242,43 @@ app.post('/api/evidence', upload.single('file'), async (req, res) => {
             courtApproval: 'pending',
             chainOfCustody: [{ officer, action: 'Initial Upload & IPFS Pinned', time: timestamp }]
         });
+
+        // ── Stellar Blockchain Anchoring ──────────────────────────────────────
+        // Anchor the evidence hash on Stellar testnet (non-blocking — errors degrade gracefully)
+        if (stellarModule) {
+            stellarModule.anchorEvidenceOnStellar({
+                id: evidence.id,
+                hash: evidence.hash,
+                ipfsCid: evidence.ipfsCid,
+                caseId: evidence.caseId,
+                caseNo: evidence.caseNo,
+            }).then(async (stellarResult) => {
+                if (stellarResult && stellarResult.txHash) {
+                    // Persist the Stellar transaction hash back to the evidence record
+                    await Evidence.findOneAndUpdate(
+                        { id: evidence.id },
+                        {
+                            $set: {
+                                stellarTxHash: stellarResult.txHash,
+                                stellarExplorerUrl: stellarResult.explorerUrl,
+                                stellarAnchoredAt: stellarResult.anchoredAt,
+                            },
+                            $push: {
+                                chainOfCustody: {
+                                    officer: 'Stellar Blockchain',
+                                    action: `Anchored on Stellar Testnet — TX: ${stellarResult.txHash.slice(0, 16)}...`,
+                                    time: stellarResult.anchoredAt || new Date().toISOString(),
+                                }
+                            }
+                        }
+                    );
+                    console.log(`[Stellar] Evidence ${evidence.id} anchored: ${stellarResult.txHash}`);
+                }
+            }).catch(err => {
+                console.warn('[Stellar] Async anchoring failed (non-fatal):', err.message);
+            });
+        }
+
         res.json(evidence);
     } catch (err) { res.status(500).json({ error: err.message }); }
 });
