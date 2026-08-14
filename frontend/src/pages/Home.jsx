@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import StellarWalletButton from "../components/StellarWalletButton";
 
 /* ─── Inline styles injected per render (theme-aware via CSS vars) ─── */
 const STYLES = `
@@ -255,13 +256,15 @@ export default function Home() {
                     </div>
 
                     {/* Desktop links */}
-                    <div className="desktop-nav-links" style={{ display: "flex", alignItems: "center", gap: 28 }}>
+                    <div className="desktop-nav-links" style={{ display: "flex", alignItems: "center", gap: 20 }}>
                         <a href="#how" className="nav-link">How It Works</a>
                         <a href="#law" className="nav-link">Law & Act</a>
                         <a href="#features" className="nav-link">Features</a>
                         <button className="theme-toggle" onClick={toggleTheme} title={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}>
                             {isDark ? "☀️" : "🌙"}
                         </button>
+                        {/* ─── Freighter Wallet Button ─── */}
+                        <StellarWalletButton compact />
                         {user ? (
                             <button className="btn-gold" style={{ padding: "9px 20px", fontSize: 13 }} onClick={() => navigate(user.role === "admin" ? "/admin" : "/dashboard")}>Dashboard →</button>
                         ) : (
@@ -294,6 +297,10 @@ export default function Home() {
                 <a href="#how" className="mob-nav-link" onClick={() => setMenuOpen(false)}>How It Works</a>
                 <a href="#law" className="mob-nav-link" onClick={() => setMenuOpen(false)}>Law & Act</a>
                 <a href="#features" className="mob-nav-link" onClick={() => setMenuOpen(false)}>Features</a>
+                {/* ─── Freighter Wallet Button (mobile) ─── */}
+                <div style={{ padding: "8px 0" }}>
+                    <StellarWalletButton style={{ width: "100%", justifyContent: "center" }} />
+                </div>
                 <div style={{ display: "flex", gap: 10, paddingTop: 4 }}>
                     {user ? (
                         <button className="btn-gold" style={{ flex: 1, padding: "11px", fontSize: 14 }} onClick={() => { navigate(user.role === "admin" ? "/admin" : "/dashboard"); setMenuOpen(false); }}>Dashboard →</button>

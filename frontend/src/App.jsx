@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { StellarWalletProvider } from "./context/StellarWalletContext";
 import { useAuth } from "./context/AuthContext";
 import { ThemeProvider } from "./context/ThemeContext";
 import Home from "./pages/Home";
@@ -78,7 +79,9 @@ function AppRoutes() {
 export default function App() {
   return (
     <ThemeProvider>
-      <AppRoutes />
+      <StellarWalletProvider>
+        <AppRoutes />
+      </StellarWalletProvider>
     </ThemeProvider>
   );
 }
