@@ -1,0 +1,107 @@
+name: LexChain CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint-and-test-backend:
+    name: Backend — Lint & Syntax Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Check for syntax errors (node --check)
+        run: |
+          node --check server.js
+          node --check db.js
+          node --check models.js
+          node --check stellar.js
+          node --check stellarRetry.js
+          node --check middleware/auth.js
+          node --check middleware/rateLimit.js
+          node --check middleware/validate.js
+
+      - name: Verify API health endpoint responds
+        env:
+          JWT_SECRET: test-secret
+          PINATA_JWT: test-jwt
+        run: |
+          node -e "
+            const app = require('./server');
+            const http = require('http');
+            const server = http.createServer(app);
+            server.listen(0, () => {
+              const port = server.address().port;
+              http.get('http://localhost:' + port + '/api/health', (res) => {
+                let data = '';
+                res.on('data', d => data += d);
+                res.on('end', () => {
+                  const parsed = JSON.parse(data);
+                  if (parsed.status !== 'ok') { console.error('Health check failed:', data); process.exit(1); }
+                  console.log('Health check passed:', parsed.status);
+                  server.close();
+                  process.exit(0);
+                });
+              }).on('error', (e) => { console.error('Request error:', e); server.close(); process.exit(1); });
+            });
+          "
+
+  lint-frontend:
+    name: Frontend — Build Check
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci --prefer-offline
+
+      - name: Build frontend (production)
+        run: npm run build
+        env:
+          VITE_API_URL: https://lexchain-backend.vercel.app
+          VITE_PRIVY_APP_ID: placeholder-for-ci
+
+  security-audit:
+    name: Security — npm audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Audit backend dependencies
+        working-directory: backend
+        run: npm audit --audit-level=high || true
+
+      - name: Audit frontend dependencies
+        working-directory: frontend
+        run: npm audit --audit-level=high || true
